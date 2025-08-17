@@ -2,7 +2,7 @@
 {
   flake.modules.homeManager.base.imports =
     with inputs.self.modules.homeManager; [
-      secrets
+      # secrets
       fish
       git
       nixvim

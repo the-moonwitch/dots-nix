@@ -12,8 +12,8 @@ let
     homeManagerConfiguration {
       pkgs = inputs.self.nixosConfigurations.${hostname}.pkgs;
       modules = [
-        hmModules.base
-        (hmModules.${hostname} or { })
+        # hmModules.base
+        hmModules.${hostname}
       ] ++ modules;
     };
   nixosConfiguration =
@@ -27,7 +27,7 @@ let
       modules = [
         { nixpkgs.hostPlatform = system; }
 
-        nixosModules.base
+        # nixosModules.base
         nixosModules.${hostname}
         # (nixosModules.${hostname} or { } )
       ] ++ modules;

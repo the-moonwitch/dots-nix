@@ -23,7 +23,7 @@
 
       # English-speaking preference
       # ---------------------------
-      LANG = "en_US";
+      LANG = "en_US.UTF-8";
       LANGUAGE = "en:pl";
       LC_MESSAGES = "en_US.UTF-8"; # Y/N forms
 

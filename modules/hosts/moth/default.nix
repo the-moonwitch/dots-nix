@@ -9,9 +9,12 @@ in
 
   flake.nixosConfigurations."${hostname}" = inputs.self.lib.nixosConfiguration {
     inherit hostname system;
+    modules = [ inputs.self.modules.nixos.preset-desktop ];
   };
 
   flake.homeConfigurations."${username}@{hostname}" =
     inputs.self.lib.homeConfiguration
-      { inherit hostname; };
+      { inherit hostname;
+  modules = [ inputs.self.modules.homeManager.presets-personal-desktop ];
+ };
 }

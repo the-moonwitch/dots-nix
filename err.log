@@ -1,0 +1,58 @@
+[35mTRACE[0m [2mnh::logging[0m[2m:[0m[2m86[0m[2m:[0m Logging OK
+[34mDEBUG[0m [2mnh[0m[2m:[0m[2m28[0m[2m:[0m Main {
+    verbose: true,
+    command: Os(
+        OsArgs {
+            subcommand: Switch(
+                OsRebuildArgs {
+                    common: CommonRebuildArgs {
+                        dry: false,
+                        ask: false,
+                        installable: Flake {
+                            reference: ".",
+                            attribute: [],
+                        },
+                        no_nom: false,
+                        out_link: None,
+                    },
+                    update_args: UpdateArgs {
+                        update: false,
+                        update_input: None,
+                    },
+                    hostname: None,
+                    specialisation: None,
+                    no_specialisation: false,
+                    extra_args: [],
+                    bypass_root_check: false,
+                    target_host: None,
+                    build_host: None,
+                },
+            ),
+        },
+    ),
+}
+[34mDEBUG[0m [2mnh[0m[2m:[0m[2m29[0m[2m:[0m [3mNH_VERSION[0m[2m=[0m4.1.1 [3mNH_REV[0m[2m=[0mSome("v4.1.2")
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m160[0m[2m:[0m [3mcmd[0m[2m=[0mExec { nix --version }
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m160[0m[2m:[0m [3mcmd[0m[2m=[0mExec { nix --version }
+[34mDEBUG[0m [2mnh::checks[0m[2m:[0m[2m196[0m[2m:[0m Required Nix features: nix-command, flakes
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m160[0m[2m:[0m [3mcmd[0m[2m=[0mExec { nix config show experimental-features }
+warning: you don't have Internet access; disabling some network-dependent features
+[34mDEBUG[0m [2mnh::checks[0m[2m:[0m[2m206[0m[2m:[0m All required Nix features are enabled
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m130[0m[2m:[0m [3mout_path[0m[2m=[0m("/tmp/nh-osf3ws0E/result", TempDir { path: "/tmp/nh-osf3ws0E" })
+[32m>[39m Building NixOS configuration
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m248[0m[2m:[0m [3mcmd[0m[2m=[0mPipeline { nix build '.#nixosConfigurations.moth.config.system.build.toplevel' --out-link /tmp/nh-osf3ws0E/result --log-format internal-json --verbose | nom --json }
+[?25lwarning: you don't have Internet access; disabling some network-dependent features
+[?2026h[35;1mwarning:[0m you don't have Internet access; disabling some network-dependent features
+[35;1mwarning:[0m Git tree '/home/ines/dots' is dirty
+Using saved setting for 'accept-flake-config = true' from ~/.local/share/nix/trusted-settings.json.
+[1m⏱ 0s[0m[?2026l[?2026h[1G[2K[1m⏱ 0s[0m[?2026l[?2026h[1G[2K[1m[32mFinished at 00:02:54 after 0s[0m[0m[?2026l[?25h
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m178[0m[2m:[0m target_specialisation: None
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m185[0m[2m:[0m Output path: /tmp/nh-osf3ws0E/result
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m186[0m[2m:[0m Target profile path: /tmp/nh-osf3ws0E/result
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m187[0m[2m:[0m Target profile exists: true
+[34mDEBUG[0m [2mnh::nixos[0m[2m:[0m[2m206[0m[2m:[0m Comparing with target profile: /tmp/nh-osf3ws0E/result
+[32m>[39m Comparing changes
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m137[0m[2m:[0m [3mcmd[0m[2m=[0mExec { nvd diff /run/current-system /tmp/nh-osf3ws0E/result }
+[32m>[39m Activating configuration
+[34mDEBUG[0m [2mnh::commands[0m[2m:[0m[2m137[0m[2m:[0m [3mcmd[0m[2m=[0mExec { sudo /nix/store/km16h26k097mnd17wb928ppqpr3v0niv-nixos-system-nixos-25.11.20250715.dab3a6e/bin/switch-to-configuration test }
+stopping the following units: accounts-daemon.service, bluetooth.service, colord.service, display-manager.service, ModemManager.service, nscd.service, power-profiles-daemon.service, rtkit-daemon.service, systemd-machined.service, udisks2.service, upower.service, wpa_supplicant.service

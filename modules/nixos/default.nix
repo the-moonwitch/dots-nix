@@ -9,7 +9,7 @@
       inputs.self.modules.nixos.nix-index
       inputs.self.modules.nixos.nix-settings
       inputs.self.modules.nixos.power-management
-      inputs.self.modules.nixos.secrets
+      # inputs.self.modules.nixos.secrets
       inputs.self.modules.nixos.unfree
     ];
 
