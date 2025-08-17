@@ -12,7 +12,6 @@
       nixos.base = {
         system = {
           inherit stateVersion;
-          rebuild.enableNg = true;
         };
       };
     };

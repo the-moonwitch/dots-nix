@@ -1,15 +1,14 @@
 { ... }:
 let
   nixConfig = {
-    accept-flake-config = true;
-    auto-optimise-store = true;
+    # accept-flake-config = true;
+    # auto-optimise-store = true;
     extra-experimental-features = [
-      "ca-derivations"
       "flakes"
       "nix-command"
       "pipe-operators"
     ];
-    preallocate-contents = true;
+    # preallocate-contents = true;
   };
 in
 {
