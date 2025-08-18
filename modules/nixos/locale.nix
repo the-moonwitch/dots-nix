@@ -1,5 +1,6 @@
+{ inputs, ... }:
 {
-  flake.modules.nixos.locale = {
+  flake.modules = inputs.self.lib.mkNixosFeature "locale" {
     services.xserver.xkb = {
       layout = "pl";
       variant = "";
@@ -15,7 +16,7 @@
       # Regional settings
       # -----------------
       # No idea if this or en_US is better or if it even matters.
-      LC_IDENTIFICATION = "pl_PL.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
       LC_CTYPE = "pl_PL.UTF-8";
       LC_COLLATE = "pl_PL.UTF-8";
       LC_ADDRESS = "pl_PL.UTF-8";
@@ -24,7 +25,7 @@
       # English-speaking preference
       # ---------------------------
       LANG = "en_US.UTF-8";
-      LANGUAGE = "en:pl";
+      LANGUAGE = "en";
       LC_MESSAGES = "en_US.UTF-8"; # Y/N forms
 
       # ISO standards

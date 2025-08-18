@@ -1,18 +1,18 @@
-{ ... }:
+{ inputs, ... }:
+with inputs.self.lib;
 {
   flake.modules =
     let
       stateVersion = "25.05";
     in
-    {
-      homeManager.base = {
+    mkFeature "base" {
+
+      home = {
         home = { inherit stateVersion; };
       };
 
-      nixos.base = {
-        system = {
-          inherit stateVersion;
-        };
+      nixos = {
+        system = { inherit stateVersion; };
       };
     };
 }

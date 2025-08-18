@@ -1,6 +1,6 @@
-{ ... }:
+{ inputs, ... }:
 {
-  flake.modules.nixos.nix-ld =
+  flake.modules = inputs.self.lib.mkNixosFeature "nix-ld" (
     { pkgs, ... }:
     {
       programs.nix-ld = {
@@ -125,5 +125,6 @@
           pipewire # immersed-vr wayland support
         ];
       };
-    };
+    }
+  );
 }

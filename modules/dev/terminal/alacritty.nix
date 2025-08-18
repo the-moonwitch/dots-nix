@@ -1,5 +1,6 @@
+{ inputs, ... }:
 {
-  flake.modules.homeManager.alacritty = {
+  flake.modules = inputs.self.lib.mkHomeFeature "alacritty" {
     programs.alacritty = {
       enable = true;
       settings = {

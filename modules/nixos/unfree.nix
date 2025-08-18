@@ -1,4 +1,5 @@
 { inputs, ... }:
+with inputs.self.lib;
 {
-  flake.modules.nixos.unfree = inputs.self.lib.declareUnfree [ ];
+  flake.modules = mkNixosFeature "unfree" (inputs.self.lib.declareUnfree [ ]);
 }

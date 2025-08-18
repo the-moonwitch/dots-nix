@@ -1,5 +1,5 @@
+{ inputs, ... }:
+with inputs.self.lib;
 {
-  flake.modules.nixos.printing = {
-    services.printing.enable = true;
-  };
+  flake.modules = mkNixosFeature "printing" { services.printing.enable = true; };
 }

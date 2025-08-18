@@ -1,13 +1,16 @@
-{ ... }:
+{ inputs, ... }:
 {
-  flake.modules.homeManager.discord =
+  flake.modules = inputs.self.lib.mkHomeFeature "discord" (
     { pkgs, ... }:
     {
-      packages = with pkgs; [
-        (discord.override {
-          withOpenASAR = true;
-          withVencord = true;
-        })
-      ];
-    };
+      home = {
+        packages = with pkgs; [
+          (discord.override {
+            withOpenASAR = true;
+            withVencord = true;
+          })
+        ];
+      };
+    }
+  );
 }

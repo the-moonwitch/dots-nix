@@ -1,5 +1,6 @@
+{ inputs, ... }:
 {
-  flake.modules.homeManager.firefox =
+  flake.modules = inputs.self.lib.mkHomeFeature "firefox" (
     { pkgs, ... }:
     {
 
@@ -16,5 +17,6 @@
           "en-US"
         ];
       };
-    };
+    }
+  );
 }
