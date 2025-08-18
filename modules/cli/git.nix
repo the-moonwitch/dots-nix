@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.modules.homeManager.git =
+  flake.modules = inputs.self.lib.mkHomeFeature "git" (
     { pkgs, ... }:
     {
 
@@ -22,7 +22,7 @@
           userEmail = me.email;
           signing = {
             format = "ssh";
-            signByDefault = true;
+            # signByDefault = true;
           };
           extraConfig = {
             init.defaultBranch = "main";
@@ -63,6 +63,8 @@
             # Tools
             # TODO: move this into a separate wakatime module eventually
             ".wakatime-project"
+            # Nix
+            "result"
           ];
           includes = [ ];
           # { path = "${DOTS}/git/something"; }
@@ -74,15 +76,16 @@
             enableAsDifftool = true;
           };
 
-          delta = {
-            enable = true;
-            options = {
-              line-numbers = true;
-              side-by-side = false;
-            };
-          };
+          #delta = {
+          #  enable = true;
+          #  options = {
+          #    line-numbers = true;
+          #    side-by-side = false;
+          #  };
+          #};
         };
 
-    };
+    }
+  );
 
 }

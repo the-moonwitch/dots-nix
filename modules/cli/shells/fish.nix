@@ -1,15 +1,14 @@
 { inputs, ... }:
 {
-  flake.modules = {
-    nixos.fish = {
+  flake.dependencies.fish = [ "cli-utils" ];
+  flake.modules = inputs.self.lib.mkFeature "fish" {
+    nixos = {
       programs.fish.enable = true;
     };
 
-    homeManager.fish =
+    home =
       { pkgs, ... }:
       {
-        imports = [ inputs.self.modules.homeManager.cli-utils ];
-
         home.shell.enableFishIntegration = true;
 
         programs = {
@@ -27,6 +26,7 @@
               cat = "bat";
               ls = "eza";
               grep = "ag";
+              cd = "z";
             };
           };
 

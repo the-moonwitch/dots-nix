@@ -1,9 +1,11 @@
 { inputs, ... }:
 {
-  flake.modules.nixos.desktop-gnome = {
-    imports = [ inputs.self.modules.nixos.desktop ];
+  flake.dependencies.desktop-gnome = [ "desktop" ];
 
-    services.displayManager.gdm.enable = true;
-    services.desktopManager.gnome.enable = true;
+  flake.modules = inputs.self.lib.mkFeature "desktop-gnome" {
+    nixos.services = {
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+    };
   };
 }

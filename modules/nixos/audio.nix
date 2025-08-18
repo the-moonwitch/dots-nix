@@ -1,6 +1,6 @@
-{ ... }:
+{ inputs, ... }:
 {
-  flake.modules.nixos.audio = {
+  flake.modules = inputs.self.lib.mkNixosFeature "audio" {
     services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {

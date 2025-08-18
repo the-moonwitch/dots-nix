@@ -4,7 +4,7 @@
 { inputs, ... }:
 {
 
-  flake.modules.nixos.moth = {
+  flake.modules = inputs.self.lib.mkNixosFeature "moth" {
 
     imports = [
       (inputs.nixpkgs + "/nixos/modules/installer/scan/not-detected.nix")

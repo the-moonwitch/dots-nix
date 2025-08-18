@@ -1,5 +1,6 @@
+{ inputs, ... }:
 {
-  flake.modules.homeManager.foot = {
+  flake.modules = inputs.self.lib.mkHomeFeature "foot" {
     programs.foot = {
       enable = true;
     };

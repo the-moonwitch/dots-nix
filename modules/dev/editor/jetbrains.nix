@@ -1,10 +1,11 @@
-{ ... }:
+{ inputs, ... }:
 {
-  flake.modules.homeManager.jetbrains =
+  flake.modules = inputs.self.lib.mkHomeFeature "jetbrains" (
     { pkgs, ... }:
     {
       home = {
         packages = with pkgs; [ jetbrains-toolbox ];
       };
-    };
+    }
+  );
 }

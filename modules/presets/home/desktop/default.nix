@@ -1,15 +1,12 @@
-{ inputs, ... }:
+{ ... }:
 {
-  flake.modules.homeManager.preset-desktop = {
-    imports = with inputs.self.modules.homeManager; [
-      base
-      firefox
+  flake.dependencies.preset-desktop = [
+    "audio"
+    "desktop-gnome"
+    "firefox"
+    "alacritty"
+    "foot"
+    "vscode"
+  ];
 
-      # TODO: Decide on one
-      alacritty
-      foot
-
-      vscode
-    ];
-  };
 }
