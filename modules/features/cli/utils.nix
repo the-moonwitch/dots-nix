@@ -11,7 +11,7 @@
       # Better shell history
       atuin = {
         enable = true;
-        flags = ["--disable-up-arrow"];
+        flags = [ "--disable-up-arrow" ];
       };
 
       # Fast cd

@@ -17,6 +17,12 @@
       mkNixosFeature = name: nixos: mkFeature name { inherit nixos; };
       mkHomeFeature = name: home: mkFeature name { inherit home; };
       mkDarwinFeature = name: darwin: mkFeature name { inherit darwin; };
+      mkOSAgnosticFeature =
+        name: mod:
+        mkFeature name {
+          nixos = mod;
+          darwin = mod;
+        };
       mkHost =
         {
           hostname,
@@ -99,6 +105,7 @@
         mkNixosFeature
         mkHomeFeature
         mkDarwinFeature
+        mkOSAgnosticFeature
         mkHost
         ;
     };
