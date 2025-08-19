@@ -25,11 +25,22 @@
     home-manager = {
       url = "github:nix-community/home-manager";
     };
+    homebrew-cask = {
+      flake = false;
+      url = "github:homebrew/homebrew-cask";
+    };
+    homebrew-core = {
+      flake = false;
+      url = "github:homebrew/homebrew-core";
+    };
     import-tree = {
       url = "github:vic/import-tree";
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
+    };
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -45,6 +56,9 @@
     };
     opnix = {
       url = "github:brizzbuzz/opnix";
+    };
+    stylix = {
+      url = "github:nix-community/stylix";
     };
     systems = {
       url = "github:nix-systems/default";
