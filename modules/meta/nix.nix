@@ -1,13 +1,10 @@
 { inputs, ... }:
 let
   nixConfig = {
-    # accept-flake-config = true;
-    # auto-optimise-store = true;
     extra-experimental-features = [
       "flakes"
       "nix-command"
     ];
-    # preallocate-contents = true;
   };
 in
 {

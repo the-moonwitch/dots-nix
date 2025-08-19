@@ -6,6 +6,18 @@
       programs.fish.enable = true;
     };
 
+    darwin =
+      { pkgs, ... }:
+      {
+        programs.fish.enable = true;
+
+        environment.shells = [
+          pkgs.fish
+          pkgs.zsh
+          pkgs.bashInteractive
+        ];
+      };
+
     home =
       { pkgs, ... }:
       {
