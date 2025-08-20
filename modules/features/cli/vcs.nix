@@ -10,6 +10,7 @@
 
           programs.gh = {
             enable = true;
+            gitCredentialHelper.enable = true;
             extensions = [ pkgs.gh-copilot ];
           };
 
@@ -18,7 +19,7 @@
               me = inputs.self.const.me;
             in
             {
-              enable = true;
+              enable = !pkgs.stdenvNoCC.isDarwin;
               package = pkgs.gitFull;
               userName = me.signature;
               userEmail = me.email;
@@ -92,7 +93,7 @@
     }
     {
       flake.modules = inputs.self.lib.mkHomeFeature "jujutsu" (
-        { pkgs, ... }:
+        { ... }:
         {
           programs.jujutsu = {
             enable = true;

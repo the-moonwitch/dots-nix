@@ -10,5 +10,15 @@
         "dev/desktop"
       ];
     };
+    MAC-QXGYWVX = {
+      hostname = "MAC-QXGYWVX";
+      system = "aarch64-darwin";
+      class = "darwin";
+      username = "ines";
+      features = [
+        "preset/desktop"
+        "dev/desktop"
+      ];
+    };
   };
 }

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 let
   me = inputs.self.const.me;
   mkFeature = inputs.self.lib.mkFeature;
@@ -39,7 +39,7 @@ in
           }${me.username}";
         };
 
-        xdg = {
+        xdg = lib.mkIf (!pkgs.stdenvNoCC.isDarwin) {
           enable = true;
           mime.enable = true;
           userDirs = {

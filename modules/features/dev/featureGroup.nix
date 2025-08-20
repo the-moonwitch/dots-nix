@@ -9,7 +9,6 @@
       "vscode"
       "jetbrains"
       "alacritty"
-      "foot"
     ];
   };
 }

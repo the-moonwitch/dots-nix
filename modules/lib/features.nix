@@ -49,7 +49,7 @@
               toKey =
                 f:
                 assert
-                  builtins.hasAttr f allFeatures
+                  builtins.hasAttr f (allFeatures // { ${hostname} = { }; })
                   || throw ''
                     Unknown feature: ${f}
                     Known features: ${builtins.concatStringsSep ", " (builtins.attrNames allFeatures)}
