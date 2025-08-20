@@ -18,6 +18,20 @@ in
 
   flake.modules = inputs.self.lib.mkFeature "nix" {
 
+    darwin =
+      { ... }:
+      {
+        # nixpkgs.overlays = [ (_final: prev: { nix = prev.lix; }) ];
+        # nix.package = pkgs.lix;
+        nix.settings = nixConfig // {
+          trusted-users = [
+            "root"
+            "@wheel"
+            inputs.self.const.me.username
+          ];
+        };
+      };
+
     nixos =
       { pkgs, ... }:
       {

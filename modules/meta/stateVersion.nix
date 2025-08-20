@@ -14,5 +14,9 @@ with inputs.self.lib;
       nixos = {
         system = { inherit stateVersion; };
       };
+
+      darwin = {
+        system.stateVersion = 6;
+      };
     };
 }

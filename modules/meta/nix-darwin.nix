@@ -2,49 +2,53 @@
 {
   flake-file.inputs = {
     nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-
-    # Declarative tap management
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
   };
 
-  flake.modules = inputs.self.lib.mkDarwinFeature "base" (
-    { pkgs, ... }:
-    let
-      taps = {
-        "homebrew/homebrew-core" = inputs.homebrew-core;
-        "homebrew/homebrew-cask" = inputs.homebrew-cask;
+  flake.modules = inputs.self.lib.mkFeature "base" {
+    home = {
+      programs.fish.shellInit = ''
+        eval (/opt/homebrew/bin/brew shellenv fish)
+      '';
+    };
+    darwin =
+      { pkgs, ... }:
+      {
+        nixpkgs.config.allowUnfree = true;
+
+        environment.systemPackages = with inputs.nix-darwin.packages.${pkgs.system}; [
+          darwin-option
+          darwin-rebuild
+          darwin-version
+          darwin-uninstaller
+        ];
+
+        system.primaryUser = inputs.self.const.me.username;
+
+        users.users.${inputs.self.const.me.username} = {
+          home = "/Users/${inputs.self.const.me.username}";
+          shell = pkgs.fish;
+        };
+
+        homebrew = {
+          enable = true;
+          onActivation = {
+            autoUpdate = true;
+            cleanup = "uninstall";
+            upgrade = true;
+          };
+          casks = [ "iterm2" ];
+        };
+
+        security.pam.services.sudo_local = {
+          reattach = true;
+          touchIdAuth = true;
+          watchIdAuth = true;
+        };
+
+        # inherit taps;
+        # homebrew = {taps = taps; };
+        # Todo move this elsewhere probably
+        #home.packages = [ pkgs.iterm2 ];
       };
-    in
-    {
-      environment.systemPackages = with inputs.nix-darwin.packages.${pkgs.system}; [
-        darwin-option
-        darwin-rebuild
-        darwin-version
-        darwin-uninstaller
-      ];
-
-      services.nix-daemon.enable = true;
-      nix-homebrew = {
-        enable = true;
-        enableRosetta = true;
-        user = inputs.const.me.username;
-      };
-
-      inherit taps;
-      homebrew.taps = taps;
-
-      mutableTaps = false;
-
-      # Todo move this elsewhere probably
-      home.packages = [ pkgs.iterm2 ];
-    }
-  );
+  };
 }

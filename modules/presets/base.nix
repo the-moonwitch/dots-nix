@@ -17,5 +17,8 @@
     "nixvim"
     "cli-utils"
     "nix"
+
+    # Niceness
+    "stylix"
   ];
 }
