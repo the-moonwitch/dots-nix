@@ -16,6 +16,9 @@
     allfollow = {
       url = "github:spikespaz/allfollow";
     };
+    cadence = {
+      url = "github:the-moonwitch/cadence";
+    };
     flake-file = {
       url = "github:vic/flake-file";
     };
@@ -25,22 +28,8 @@
     home-manager = {
       url = "github:nix-community/home-manager";
     };
-    homebrew-cask = {
-      flake = false;
-      url = "github:homebrew/homebrew-cask";
-    };
-    homebrew-core = {
-      flake = false;
-      url = "github:homebrew/homebrew-core";
-    };
     import-tree = {
       url = "github:vic/import-tree";
-    };
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-    };
-    nix-homebrew = {
-      url = "github:zhaofengli/nix-homebrew";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -50,15 +39,6 @@
     };
     nixpkgs-lib = {
       follows = "nixpkgs";
-    };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-    };
-    opnix = {
-      url = "github:brizzbuzz/opnix";
-    };
-    stylix = {
-      url = "github:nix-community/stylix";
     };
     systems = {
       url = "github:nix-systems/default";
