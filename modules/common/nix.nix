@@ -6,9 +6,18 @@ let
     systemFeature
     homeFeature
     ;
+  nixConfig = {
+    extra-experimental-features = [
+      "flakes"
+      "nix-command"
+    ];
+  };
 in
 {
-  flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
+  flake-file = {
+    inherit nixConfig;
+    inputs.nix-index-database.url = "github:nix-community/nix-index-database";
+  };
 
   cadence.features.nix = {
     lix = nixosFeature.system (
@@ -17,6 +26,16 @@ in
         nixpkgs.overlays = [ (_final: prev: { nix = prev.lix; }) ];
         nix.package = pkgs.lix;
         programs.command-not-found.enable = true;
+      }
+    );
+
+    nixpkgs = systemFeature (
+      { host, ... }:
+      {
+        nixpkgs = {
+          hostPlatform = (hostDef host).system;
+          config.allowUnfree = true;
+        };
       }
     );
 
