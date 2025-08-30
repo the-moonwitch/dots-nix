@@ -16,7 +16,7 @@ let
     targetName:
     lib.mkOption {
       description = "The ${targetName} definition of the feature.";
-      type = lib.types.deferredModule;
+      type = lib.types.anything;
       default = { };
     };
 
@@ -140,7 +140,7 @@ in
                 (builtins.map (class: {
                   name = class;
                   value = lib.mkOption {
-                    type = lib.types.listOf lib.types.deferredModule;
+                    type = lib.types.listOf lib.types.anything;
                     default = [ ];
                   };
                 }))
