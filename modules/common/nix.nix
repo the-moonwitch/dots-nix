@@ -56,7 +56,7 @@ in
       }
     );
 
-    home = homeFeature {
+    homeManager = homeFeature {
       imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
       programs = {

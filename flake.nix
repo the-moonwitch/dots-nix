@@ -17,7 +17,7 @@
       url = "github:spikespaz/allfollow";
     };
     cadence = {
-      url = "github:the-moonwitch/cadence";
+      url = "path:/home/ines/dots/cadence";
     };
     flake-file = {
       url = "github:vic/flake-file";

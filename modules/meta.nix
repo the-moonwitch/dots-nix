@@ -7,7 +7,7 @@
   flake-file = {
     description = "Ninix";
     inputs = {
-      cadence.url = "github:the-moonwitch/cadence";
+      cadence.url = "path:/home/ines/dots/cadence";
     };
   };
 }

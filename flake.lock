@@ -22,17 +22,14 @@
     },
     "cadence": {
       "locked": {
-        "lastModified": 1756414686,
-        "narHash": "sha256-2F110y+GFVu0War4JU88O2nmSa2a4WcLiwpDUUf0UYI=",
-        "owner": "the-moonwitch",
-        "repo": "cadence",
-        "rev": "c4499da79a0135f006e2b42783d01d237b1fc441",
-        "type": "github"
+        "lastModified": 1756514687,
+        "narHash": "sha256-tDJ8H46COuRttC3w+VH5XY9wjwrdkhQfDb8PHvbuqAI=",
+        "path": "/home/ines/dots/cadence",
+        "type": "path"
       },
       "original": {
-        "owner": "the-moonwitch",
-        "repo": "cadence",
-        "type": "github"
+        "path": "/home/ines/dots/cadence",
+        "type": "path"
       }
     },
     "flake-file": {

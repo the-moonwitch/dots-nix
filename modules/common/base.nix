@@ -3,17 +3,6 @@ let
   inherit (config.cadence.lib) hostDef systemFeature;
 in
 {
-  imports = [
-    inputs.cadence.flakeModules.default
-  ];
-
-  flake-file = {
-    description = "Ninix";
-    inputs = {
-      cadence.url = "github:the-moonwitch/cadence";
-    };
-  };
-
   cadence = {
     dependencies.base = [
       "nix"
@@ -35,7 +24,7 @@ in
           system.stateVersion = 6;
         };
 
-        home = {
+        homeManager = {
           home.stateVersion = "25.05";
         };
       };
