@@ -3,7 +3,10 @@
   lib,
   ...
 }:
-let const = import ./_const.nix; in {
+let
+  const = import ./_const.nix;
+in
+{
   config.cadence.lib =
     let
       hostDef = label: config.cadence.hosts.${label} // { inherit label; };
@@ -89,13 +92,13 @@ let const = import ./_const.nix; in {
       nixosFeature = classFeature "nixos";
       darwinFeature = classFeature "darwin";
       systemFeature = mod: {
-        pred = h: h.class != "homeManager";
-        ${const.darwin} = mod;
-        ${const.nixos} = mod;
+        pred = h: h.class != const.class.homeManager;
+        ${const.class.darwin} = mod;
+        ${const.class.nixos} = mod;
       };
       homeFeature = mod: {
-        pred = h: h.class == const.homeManager;
-        ${const.homeManager} = mod;
+        pred = h: h.class == const.class.homeManager;
+        ${const.class.homeManager} = mod;
       };
     in
     {

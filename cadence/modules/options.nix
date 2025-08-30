@@ -10,7 +10,7 @@ let
   functionType = lib.mkOptionType {
     name = "function";
     check = f: builtins.isFunction f || (f ? __functor);
-    emptyValue = constTrue;
+    # emptyValue = constTrue;
   };
   targetDef =
     targetName:

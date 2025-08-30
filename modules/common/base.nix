@@ -12,7 +12,7 @@ in
       hostname = systemFeature (
         { host, ... }:
         {
-          networking.hostName = (hostDef host).hostname;
+          networking.hostName = host.hostname;
         }
       );
       stateVersion = {

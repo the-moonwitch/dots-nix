@@ -33,7 +33,7 @@ in
       { host, ... }:
       {
         nixpkgs = {
-          hostPlatform = (hostDef host).system;
+          hostPlatform = host.system;
           config.allowUnfree = true;
         };
       }
@@ -50,7 +50,7 @@ in
           trusted-users = [
             "root"
             "@wheel"
-            (hostDef host).username
+            host.username
           ];
         };
       }
