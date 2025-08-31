@@ -1,9 +1,9 @@
-{ inputs, config, ... }:
+{ self, ... }:
 let
-  inherit (config.cadence.lib) hostDef systemFeature;
+  inherit (self.lib) systemFeature;
 in
 {
-  cadence = {
+  flake = {
     dependencies.base = [
       "nix"
       "nixos"

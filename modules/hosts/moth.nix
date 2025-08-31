@@ -1,9 +1,9 @@
-{ inputs, config, ... }:
+{ inputs, self, ... }:
 let
-  inherit (config.cadence.lib) nixosFeature;
+  inherit (self.lib) nixosFeature;
 in
 {
-  cadence = {
+  flake = {
     hosts = {
       moth = {
         hostname = "moth";

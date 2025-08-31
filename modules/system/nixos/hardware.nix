@@ -1,11 +1,11 @@
-{ config, lib, ... }:
+{ self, lib, ... }:
 let
-  inherit (config.cadence.lib)
+  inherit (self.lib)
     nixosFeature
     ;
 in
 {
-  cadence.features.nixos = {
+  flake.features.nixos = {
     hardware = nixosFeature.system {
       hardware = {
         enableAllHardware = true;

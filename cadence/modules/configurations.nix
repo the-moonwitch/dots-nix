@@ -2,233 +2,136 @@
   inputs,
   lib,
   config,
+  self,
   ...
 }:
 let
   inherit (config) cadence;
   inherit (cadence.lib) const;
   inherit (builtins)
+    any
     attrNames
     attrValues
+    concatLists
     concatStringsSep
     filter
     foldl'
     genericClosure
-    groupBy
     getAttr
-    hasAttr
-    listToAttrs
     map
-    mapAttrs
     ;
-  hostLabels = attrNames cadence.hosts;
-  hostDefs = map (label: cadence.hosts.${label} // { inherit label; }) hostLabels;
-  allFeatures = attrNames (cadence.dependencies // cadence.features);
+  featureNames = attrNames cadence.dependencies ++ lib.flatten (attrValues self.modules);
   resolveDeps =
     deps:
     let
       validate =
-        featureName:
+        key:
         assert
-          lib.elem featureName allFeatures
+          lib.elem key featureNames
           || throw ''
-            Undefined feature `${featureName}`.
-            Known features: [ ${concatStringsSep ", " allFeatures} ];
+            Undefined feature `${key}`.
+            Known features: [ ${concatStringsSep ", " featureNames} ]
           '';
         {
-          key = featureName;
+          inherit key;
         };
-      resolvedTagsAndFeatures = genericClosure {
-        startSet = map validate deps;
-        operator = { key }: map validate (cadence.dependencies.${key} or [ ]);
-      };
-      resolvedFeatures = filter ({ key }: hasAttr key cadence.features) resolvedTagsAndFeatures;
-      featureDefs = map (
-        { key }:
-        {
-          name = key;
-          value = cadence.features.${key};
-        }
-      ) resolvedFeatures;
+      resolvedFeatures = lib.pipe deps [
+        (map validate)
+        (
+          keys:
+          genericClosure {
+            startSet = keys;
+            operator = { key }: map validate (cadence.dependencies.${key} or [ ]);
+          }
+        )
+        (filter ({ key }: any (el: el == key)))
+        (map (getAttr "key"))
+        lib.unique
+      ];
     in
-    featureDefs;
+    resolvedFeatures;
 
-  # string -> attrsOf ( attrsOf module )
-  hostModules =
+  hostConfig =
     hostDef:
     let
       class = hostDef.class;
       systemClass = if class == const.class.homeManager then null else class;
-      hostFeatures = (
+      baseFeatures = lib.unique (concatLists [
         hostDef.features
-        ++ (lib.optional (lib.elem "base" allFeatures) "base")
-        ++ (lib.optional (lib.elem hostDef.label allFeatures) hostDef.label)
-      );
-      # canonicalModule :: { name :: string, value :: module}
-      # canonicalModuleWithClass :: { class :: string, value :: canonicalModule }
-      # featureAsModules :: { name :: string, value :: attrsOf featureImpl } -> [ canonicalModuleWithClass ]
-      featureAsModules =
-        { name, value }:
-        let
-          featureLabel = name; # :: string
-          featureImpls = value; # :: attrsOf featureImpl
-          canonicalModule = implName: mod: {
-            name = "cadence-${hostDef.label}-${featureLabel}-${implName}";
-            value = mod;
-          };
-          # string -> featureImpl -> [ canonicalModuleWithClass ]
-          implAsModules =
-            implName:
-            {
-              pred,
-              ...
-            }@i:
-            if pred hostDef then
-              (lib.optional (i.${const.class.homeManager} != { }) {
-                class = const.class.homeManager;
-                value = canonicalModule implName i.${const.class.homeManager};
-              })
-              ++ lib.optional (systemClass != null) {
-                class = systemClass;
-                value = canonicalModule implName i.${systemClass};
-              }
-            else
-              [ ];
-          # [ [ canonicalModuleWithClass ] ]
-          impls = lib.mapAttrsToList implAsModules featureImpls;
-        in
-        # [ canonicalModuleWithClass ]
-        lib.flatten impls;
-    in
-    lib.pipe hostFeatures [
-      # [ { name :: string, value :: module } ]
-      resolveDeps
-      # [ [ canonicalModuleWithClass ] ]
-      (map featureAsModules)
-      # [ canonicalModuleWithClass ]
-      lib.flatten
-      # attrsOf [ canonicalModuleWithClass ]
-      (groupBy (mod: mod.class))
-      # attrsOf ( attrsOf module )
-      (mapAttrs (
-        _: cModules:
-        let
-          # [ {name :: string, value :: string} ]
-          modules = map (mod: mod.value) cModules;
-        in
-        # attrsOf ( attrsOf module )
-        listToAttrs modules
-      ))
-    ];
-
-  # attrsOf (attrsOf ( attrsOf module ))
-  #
-  # modulesByHost.<hostlabel>.<class>.<name> :: module
-  modulesByHost = builtins.foldl' (
-    acc: hostDef:
-    acc
-    // {
-      ${hostDef.label} = hostModules hostDef;
-    }
-  ) { } hostDefs;
-
-  modulesByClass = foldl' (acc: modules: lib.recursiveUpdate acc modules) { } (
-    attrValues modulesByHost
-  );
-
-  # configs
-  configurations =
-    let
-      hosts = lib.mapAttrsToList (label: hostDef: {
-        def = hostDef // {
-          inherit label;
-        };
-        modules = (
-          mapAttrs (
-            class: modules: map (modLabel: inputs.self.modules.${class}.${modLabel}) (attrNames modules)
-          ) modulesByHost.${label}
+        (lib.optional (lib.elem "base" featureNames) "base")
+        (lib.optional (lib.elem hostDef.label featureNames) hostDef.label)
+      ]);
+      resolvedFeatures = resolveDeps baseFeatures;
+      resolvedModules =
+        moduleType:
+        builtins.filter (f: f != null) (
+          builtins.map (f: inputs.self.modules.${moduleType}.${f} or null) resolvedFeatures
         );
-      }) cadence.hosts;
+      homeModule = {
+        home-manager.users.${hostDef.username} = {
+          imports = resolvedModules "homeManager";
+        };
+      };
+
+      systemConfig = {
+        nixos = inputs.nixpkgs.lib.nixosSystem {
+          inherit (hostDef) system;
+          specialArgs.host = hostDef;
+          modules = [
+            homeModule
+            {
+              nixpkgs.hostPlatform = hostDef.system;
+              networking.hostName = hostDef.hostname;
+            }
+          ]
+          ++ resolvedModules "nixos";
+        };
+        darwin = inputs.nix-darwin.lib.darwinSystem {
+          inherit (hostDef) system;
+          specialArgs.host = hostDef;
+          modules = [
+            homeModule
+            {
+              nixpkgs.hostPlatform = hostDef.system;
+            }
+          ]
+          ++ resolvedModules "darwin";
+        };
+      };
     in
     {
-      getKey, # host -> string
-      class, # string
-      getExtraArgs, # host -> attrset,
-      mkSystem,
-      getBaseModules, # listOf module
-    }:
-    builtins.foldl' lib.recursiveUpdate { } (
-      map (
-        { def, modules }:
-        lib.optionalAttrs (def.class == class) {
-          ${getKey def} = mkSystem (
-            {
-              modules = (getBaseModules def) ++ [
-                {
-                  imports = modules.${class};
-                  home-manager.users.${def.username} = {
-                    imports = modules.${const.class.homeManager};
-                  };
-                }
-              ];
-            }
-            // (getExtraArgs def)
-          );
-        }
-      ) hosts
-    );
-
-  nixosConfigurations = configurations {
-    getKey = getAttr "hostname";
-    class = const.class.nixos;
-    getExtraArgs = def: {
-      system = def.system;
-      specialArgs.host = def;
+      ${lib.mapNullable (sc: "${sc}Configurations") systemClass}.${hostDef.hostname} =
+        systemConfig.${systemClass};
+      homeManagerConfigurations."${hostDef.username}@${hostDef.hostname}" =
+        inputs.home-manager.lib.homeManagerConfiguration
+          {
+            inherit (hostDef) system;
+            modules = [
+              homeModule
+              {
+                nixpkgs.hostPlatform = hostDef.system;
+              }
+            ];
+            extraSpecialArgs = {
+              host = hostDef;
+            };
+          };
     };
-    mkSystem = inputs.nixpkgs.lib.nixosSystem;
-    getBaseModules = def: [
-      inputs.home-manager.nixosModules.home-manager
-      {
-        nixpkgs.hostPlatform = def.system;
-        networking.hostName = def.hostname;
-      }
-    ];
-  };
 
-  darwinConfigurations = configurations {
-    getKey = getAttr "hostname";
-    class = const.class.darwin;
-    getExtraArgs = def: {
-      specialArgs.host = def;
-    };
-    mkSystem = inputs.nixpkgs.lib.darwinSystem;
-    getBaseModules = def: [
-      inputs.home-manager.darwinModules.home-manager
-      {
-        nixpkgs.hostPlatform = def.system;
-      }
-    ];
-  };
+  configurations = lib.pipe config.cadence.hosts [
+    attrNames
+    (map inputs.cadence.lib.hostParams)
+    (map hostConfig)
+    (foldl' lib.recursiveUpdate {
+      nixosConfigurations = { };
+      darwinConfigurations = { };
+      homeManagerConfigurations = { };
+    })
+  ];
 
-  homeConfigurations = configurations {
-    getKey = def: "${def.username}@${def.hostname}";
-    class = const.class.homeManager;
-    getExtraArgs = def: {
-      extraSpecialArgs.host = def;
-    };
-    mkSystem = inputs.home-manager.lib.homeManagerConfiguration;
-    getBaseModules = def: [
-      inputs.home-manager.darwinModules.home-manager
-      {
-        nixpkgs.hostPlatform = def.system;
-      }
-    ];
-  };
 in
 {
-  cadence._hostModules = modulesByHost;
-  flake.modules = modulesByClass;
-  flake.nixosConfigurations = nixosConfigurations;
-  flake.darwinConfigurations = darwinConfigurations;
-  flake.homeConfigurations = homeConfigurations;
+  flake.nixosConfigurations = configurations.nixosConfigurations;
+  flake.darwinConfigurations = configurations.darwinConfigurations;
+  flake.homeConfigurations = configurations.homeConfigurations;
 }

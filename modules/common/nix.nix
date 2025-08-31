@@ -1,7 +1,6 @@
-{ inputs, config, ... }:
+{ inputs, self, ... }:
 let
-  inherit (config.cadence.lib)
-    hostDef
+  inherit (self.lib)
     nixosFeature
     systemFeature
     homeFeature
@@ -19,7 +18,7 @@ in
     inputs.nix-index-database.url = "github:nix-community/nix-index-database";
   };
 
-  cadence.features.nix = {
+  flake.features.nix = {
     lix = nixosFeature.system (
       { pkgs, ... }:
       {

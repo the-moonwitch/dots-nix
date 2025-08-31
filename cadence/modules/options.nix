@@ -5,37 +5,6 @@
 }:
 let
   const = import ./_const.nix;
-  constTrue = lib.const true;
-
-  functionType = lib.mkOptionType {
-    name = "function";
-    check = f: builtins.isFunction f || (f ? __functor);
-    # emptyValue = constTrue;
-  };
-  targetDef =
-    targetName:
-    lib.mkOption {
-      description = "The ${targetName} definition of the feature.";
-      type = lib.types.anything;
-      default = { };
-    };
-
-  featureImpl = lib.types.submodule {
-    options = {
-      pred = lib.mkOption {
-        description = ''
-          Necessary precondition for the feature.
-          Should be a function from a host key to bool, returning true if the feature
-          can be enabled on that host.'';
-        type = functionType;
-        default = constTrue;
-        defaultText = lib.literalExpression "lib.const true";
-      };
-      ${const.class.homeManager} = targetDef const.class.homeManager;
-      ${const.class.nixos} = targetDef const.class.nixos;
-      ${const.class.darwin} = targetDef const.class.darwin;
-    };
-  };
 
   host = lib.types.submodule {
     options = {
@@ -74,7 +43,7 @@ in
 {
   config.cadence = {
     lib = {
-      types = { inherit host featureImpl; };
+      types = { inherit host; };
       inherit const;
     };
   };
@@ -86,20 +55,6 @@ in
         lib = lib.mkOption {
           description = "Cadence library";
           type = lib.types.attrsOf lib.types.anything;
-          default = { };
-        };
-
-        features = lib.mkOption {
-          description = "Feature definitions";
-          type = lib.types.lazyAttrsOf (lib.types.lazyAttrsOf featureImpl);
-          example = lib.literalExpression ''
-            features.enable-ssh = {
-              nixos = cadence.lib.nixosFeature.system {
-                  services.openssh.enable = true;
-                };
-              };
-            };
-          '';
           default = { };
         };
 
@@ -128,27 +83,6 @@ in
               features = [ "group-desktop" "vscode" "enable-ssh" ];
             };
           '';
-        };
-
-        # Internals
-        _hostModules = lib.mkOption {
-          description = "Internal: canonical-form, resolved modules per host.";
-          type = lib.types.attrsOf (
-            lib.types.submodule {
-              options = lib.pipe const.class [
-                builtins.attrValues
-                (builtins.map (class: {
-                  name = class;
-                  value = lib.mkOption {
-                    type = lib.types.listOf lib.types.anything;
-                    default = [ ];
-                  };
-                }))
-                builtins.listToAttrs
-              ];
-            }
-          );
-          default = { };
         };
       };
     };
