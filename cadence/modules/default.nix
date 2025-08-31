@@ -15,4 +15,12 @@
 
       flake.features = { };
     };
+
+  # perSystem.lib =
+  #   {
+  #     inputs,
+  #     lib,
+  #     ...
+  #   }@i:
+  #   import ./lib.nix i;
 }

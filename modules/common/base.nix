@@ -1,21 +1,19 @@
-{ self, ... }:
+{ inputs, ... }:
 let
-  inherit (self.lib) systemFeature;
+  inherit (inputs.cadence.lib) feature features;
 in
 {
   flake = {
     dependencies.base = [
+      "base/stateVersion"
+      "base/hostname"
+      "base/homePkgs"
+
       "nix"
       "nixos"
     ];
-    features.base = {
-      hostname = systemFeature (
-        { host, ... }:
-        {
-          networking.hostName = host.hostname;
-        }
-      );
-      stateVersion = {
+    modules = features [
+      (feature "base/stateVersion" {
         nixos = {
           system.stateVersion = "25.05";
         };
@@ -27,11 +25,17 @@ in
         homeManager = {
           home.stateVersion = "25.05";
         };
-      };
-      homePkgs = systemFeature {
+      })
+      (feature.system "base/hostname" (
+        { host, ... }:
+        {
+          networking.hostName = host.hostname;
+        }
+      ))
+      (feature.system "base/homePkgs" {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-      };
-    };
+      })
+    ];
   };
 }

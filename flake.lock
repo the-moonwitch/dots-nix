@@ -22,8 +22,8 @@
     },
     "cadence": {
       "locked": {
-        "lastModified": 1756623846,
-        "narHash": "sha256-8lIrFARrcsE5lK25vhPKOqIVGs9mJglIa8f2y5Ui4sw=",
+        "lastModified": 1756653365,
+        "narHash": "sha256-+kToxyDyPwuwqPea50EGMkfq8Rwr2MMbP/MYHn2/zzI=",
         "path": "/home/ines/dots/cadence",
         "type": "path"
       },

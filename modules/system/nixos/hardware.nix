@@ -1,35 +1,45 @@
-{ self, lib, ... }:
+{ inputs, lib, ... }:
 let
-  inherit (self.lib)
-    nixosFeature
+  inherit (inputs.cadence.lib)
+    feature
+    features
     ;
 in
 {
-  flake.features.nixos = {
-    hardware = nixosFeature.system {
+  cadence.dependencies.hardware = [
+    "nixos/hardware"
+    "nixos/powerManagement"
+    "nixos/boot"
+    "nixos/networking"
+  ];
+
+  flake.modules = features [
+    (feature.nixos "nixos/hardware" {
       hardware = {
         enableAllHardware = true;
         enableAllFirmware = true;
         enableRedistributableFirmware = true;
       };
-    };
-    powerManagement = nixosFeature.system {
+    })
+    (feature.nixos "nixos/powerManagement" {
       powerManagement = {
         enable = lib.mkDefault true;
         cpuFreqGovernor = "schedutil";
       };
-    };
-    boot = nixosFeature.system {
-      boot.loader = {
-        systemd-boot.enable = lib.mkDefault true;
-        efi.canTouchEfiVariables = lib.mkDefault true;
+    })
+    (feature.nixos "nixos/boot" {
+      boot = {
+        loader = {
+          systemd-boot.enable = lib.mkDefault true;
+          efi.canTouchEfiVariables = lib.mkDefault true;
+        };
       };
-    };
-    networking = nixosFeature.system {
+    })
+    (feature.nixos "nixos/networking" {
       networking = {
         networkmanager.enable = true;
         # useDHCP = true;
       };
-    };
-  };
+    })
+  ];
 }

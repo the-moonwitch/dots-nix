@@ -1,10 +1,6 @@
-{ inputs, self, ... }:
+{ inputs, ... }:
 let
-  inherit (self.lib)
-    nixosFeature
-    systemFeature
-    homeFeature
-    ;
+  inherit (inputs.cadence.lib) feature features;
   nixConfig = {
     extra-experimental-features = [
       "flakes"
@@ -18,17 +14,22 @@ in
     inputs.nix-index-database.url = "github:nix-community/nix-index-database";
   };
 
-  flake.features.nix = {
-    lix = nixosFeature.system (
+  cadence.dependencies.nix = [
+    "nix/lix"
+    "nix/nixpkgs"
+    "nix/nix-settings"
+  ];
+
+  flake.modules = features [
+    (feature.system "nix/lix" (
       { pkgs, ... }:
       {
         nixpkgs.overlays = [ (_final: prev: { nix = prev.lix; }) ];
         nix.package = pkgs.lix;
         programs.command-not-found.enable = true;
       }
-    );
-
-    nixpkgs = systemFeature (
+    ))
+    (feature.system "nix/nixpkgs" (
       { host, ... }:
       {
         nixpkgs = {
@@ -36,9 +37,8 @@ in
           config.allowUnfree = true;
         };
       }
-    );
-
-    nix-settings = systemFeature (
+    ))
+    (feature.system "nix/nix-settings" (
       { host, ... }:
       {
         nix.settings = {
@@ -53,9 +53,8 @@ in
           ];
         };
       }
-    );
-
-    homeManager = homeFeature {
+    ))
+    (feature.home "nix" {
       imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
       programs = {
@@ -67,6 +66,6 @@ in
           flake = ./../../flake.nix;
         };
       };
-    };
-  };
+    })
+  ];
 }

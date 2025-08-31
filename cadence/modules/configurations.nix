@@ -20,6 +20,8 @@ let
     getAttr
     map
     ;
+
+  # TODO: Feature trees group/feature
   featureNames = attrNames cadence.dependencies ++ lib.flatten (attrValues self.modules);
   resolveDeps =
     deps:

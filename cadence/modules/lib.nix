@@ -1,5 +1,6 @@
 {
-  self,
+  inputs,
+  lib,
   ...
 }:
 let
@@ -7,9 +8,9 @@ let
   const = import ./_const.nix;
 in
 {
-  flake.lib =
+  cadence.lib =
     let
-      hostParams = label: self.hosts.${label} // { inherit label; };
+      hostParams = label: inputs.cadence.hosts.${label} // { inherit label; };
 
       if_ =
         pred: modules:
@@ -52,15 +53,23 @@ in
             };
           __functor = mkFeature;
         };
+
+      features =
+        featList:
+        builtins.foldl' (acc: f: lib.recursiveUpdate acc f) {
+          nixos = { };
+          darwin = { };
+          homeManager = { };
+        } featList;
     in
     {
       inherit
         hostParams
         if_
+        feature
         featureIf
         featureIfHost
-        feature
+        features
         ;
     };
-
 }
