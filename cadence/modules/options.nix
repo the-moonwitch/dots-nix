@@ -41,23 +41,10 @@ let
   };
 in
 {
-  config.cadence = {
-    lib = {
-      types = { inherit host; };
-      inherit const;
-    };
-  };
-
   options.cadence = lib.mkOption {
     description = "Cadence configuration";
     type = lib.types.submodule {
       options = {
-        lib = lib.mkOption {
-          description = "Cadence library";
-          type = lib.types.attrsOf lib.types.anything;
-          default = { };
-        };
-
         dependencies = lib.mkOption {
           description = ''
             Dependencies for each feature; features belonging to each tag or group.

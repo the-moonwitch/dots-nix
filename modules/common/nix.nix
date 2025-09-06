@@ -54,7 +54,7 @@ in
         };
       }
     ))
-    (feature.home "nix" {
+    (feature.homeManager "nix" {
       imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
       programs = {

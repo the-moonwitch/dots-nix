@@ -6,8 +6,7 @@
   ...
 }:
 let
-  inherit (config) cadence;
-  inherit (cadence.lib) const;
+  inherit (inputs.cadence.lib) const;
   inherit (builtins)
     any
     attrNames
@@ -20,9 +19,9 @@ let
     getAttr
     map
     ;
-
+  cfg = config.cadence;
   # TODO: Feature trees group/feature
-  featureNames = attrNames cadence.dependencies ++ lib.flatten (attrValues self.modules);
+  featureNames = attrNames cfg.dependencies ++ lib.flatten (attrValues self.modules);
   resolveDeps =
     deps:
     let
@@ -43,7 +42,7 @@ let
           keys:
           genericClosure {
             startSet = keys;
-            operator = { key }: map validate (cadence.dependencies.${key} or [ ]);
+            operator = { key }: map validate (cfg.dependencies.${key} or [ ]);
           }
         )
         (filter ({ key }: any (el: el == key)))

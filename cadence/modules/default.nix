@@ -1,4 +1,4 @@
-{
+inputs: {
   flakeModules.default =
     { inputs, lib, ... }:
     {
@@ -10,17 +10,10 @@
         ./configurations.nix
         ./formatter.nix
         ./options.nix
-        ./lib.nix
       ];
 
       flake.features = { };
     };
 
-  # perSystem.lib =
-  #   {
-  #     inputs,
-  #     lib,
-  #     ...
-  #   }@i:
-  #   import ./lib.nix i;
+  lib = import ./lib.nix inputs;
 }
