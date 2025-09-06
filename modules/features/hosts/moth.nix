@@ -1,16 +1,7 @@
 { inputs, ... }:
 let
   inherit (inputs.cadence.lib) feature features;
-in
-{
-  cadence.hosts = {
-    moth = {
-      hostname = "moth";
-      system = "x86_64-linux";
-      class = "nixos";
-      features = [ ];
-    };
-  };
+
   cadence.dependencies.moth = [
     "moth/kernel"
     "moth/filesystems"
@@ -33,6 +24,7 @@ in
       boot.kernelModules = [ "kvm-amd" ];
       boot.extraModulePackages = [ ];
     })
+
     (feature.nixos "moth/filesystems" {
       fileSystems."/" = {
         device = "/dev/disk/by-uuid/56ae634a-36ab-433e-a3d9-102f6e8a5bbd";
@@ -55,4 +47,7 @@ in
       swapDevices = [ ];
     })
   ];
+in
+{
+  inherit flake cadence;
 }

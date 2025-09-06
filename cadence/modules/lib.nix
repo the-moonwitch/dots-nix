@@ -3,10 +3,9 @@ let
   inherit (builtins) mapAttrs;
   inherit (inputs.nixpkgs-lib) lib;
   const = import ./_const.nix;
-  hostParams = label: inputs.config.flake.hosts.${label} // { inherit label; };
 
   if_ =
-    pred: modules:
+    pred: _modules:
     mapAttrs (
       _: features:
       mapAttrs (
@@ -15,7 +14,7 @@ let
       ) features
     );
 
-  featureIf = pred: mapAttrs (name: fn: if_ pred fn);
+  featureIf = pred: mapAttrs (_name: fn: if_ pred fn);
 
   featureIfHost = label: featureIf (hostDef: hostDef.label == label);
 
@@ -57,7 +56,6 @@ let
 in
 {
   inherit
-    hostParams
     if_
     feature
     featureIf

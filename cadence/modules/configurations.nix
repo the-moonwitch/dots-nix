@@ -8,11 +8,12 @@
 let
   inherit (inputs.cadence.lib) const;
   inherit (builtins)
-    any
     attrNames
     attrValues
     concatLists
+    concatMap
     concatStringsSep
+    elem
     filter
     foldl'
     genericClosure
@@ -21,7 +22,8 @@ let
     ;
   cfg = config.cadence;
   # TODO: Feature trees group/feature
-  featureNames = attrNames cfg.dependencies ++ lib.flatten (attrValues self.modules);
+  featureNames = attrNames cfg.dependencies ++ concatMap attrNames (attrValues self.modules);
+
   resolveDeps =
     deps:
     let
@@ -45,7 +47,7 @@ let
             operator = { key }: map validate (cfg.dependencies.${key} or [ ]);
           }
         )
-        (filter ({ key }: any (el: el == key)))
+        (filter ({ key }: elem key featureNames))
         (map (getAttr "key"))
         lib.unique
       ];
@@ -59,8 +61,8 @@ let
       systemClass = if class == const.class.homeManager then null else class;
       baseFeatures = lib.unique (concatLists [
         hostDef.features
-        (lib.optional (lib.elem "base" featureNames) "base")
-        (lib.optional (lib.elem hostDef.label featureNames) hostDef.label)
+        (lib.optional (elem "base" featureNames) "base")
+        (lib.optional (elem hostDef.label featureNames) hostDef.label)
       ]);
       resolvedFeatures = resolveDeps baseFeatures;
       resolvedModules =
@@ -68,7 +70,9 @@ let
         builtins.filter (f: f != null) (
           builtins.map (f: inputs.self.modules.${moduleType}.${f} or null) resolvedFeatures
         );
-      homeModule = {
+      homeModule = break {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
         home-manager.users.${hostDef.username} = {
           imports = resolvedModules "homeManager";
         };
@@ -79,6 +83,7 @@ let
           inherit (hostDef) system;
           specialArgs.host = hostDef;
           modules = [
+            inputs.home-manager.nixosModules.home-manager
             homeModule
             {
               nixpkgs.hostPlatform = hostDef.system;
@@ -91,10 +96,9 @@ let
           inherit (hostDef) system;
           specialArgs.host = hostDef;
           modules = [
+            inputs.home-manager.darwinModules.home-manager
             homeModule
-            {
-              nixpkgs.hostPlatform = hostDef.system;
-            }
+            { nixpkgs.hostPlatform = hostDef.system; }
           ]
           ++ resolvedModules "darwin";
         };
@@ -103,15 +107,13 @@ let
     {
       ${lib.mapNullable (sc: "${sc}Configurations") systemClass}.${hostDef.hostname} =
         systemConfig.${systemClass};
-      homeManagerConfigurations."${hostDef.username}@${hostDef.hostname}" =
+      homeConfigurations."${hostDef.username}@${hostDef.hostname}" =
         inputs.home-manager.lib.homeManagerConfiguration
           {
             inherit (hostDef) system;
             modules = [
               homeModule
-              {
-                nixpkgs.hostPlatform = hostDef.system;
-              }
+              { nixpkgs.hostPlatform = hostDef.system; }
             ];
             extraSpecialArgs = {
               host = hostDef;
@@ -121,12 +123,12 @@ let
 
   configurations = lib.pipe config.cadence.hosts [
     attrNames
-    (map inputs.cadence.lib.hostParams)
+    (map (label: config.cadence.hosts.${label} // { inherit label; }))
     (map hostConfig)
     (foldl' lib.recursiveUpdate {
       nixosConfigurations = { };
       darwinConfigurations = { };
-      homeManagerConfigurations = { };
+      homeConfigurations = { };
     })
   ];
 

@@ -1,6 +1,7 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkNixosFeature "audio" {
+let
+  inherit (inputs.cadence.lib.feature) nixos;
+  flake.modules = nixos "audio" {
     services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
@@ -10,4 +11,7 @@
       pulse.enable = true;
     };
   };
+in
+{
+  inherit flake;
 }

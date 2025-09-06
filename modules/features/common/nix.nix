@@ -7,8 +7,7 @@ let
       "nix-command"
     ];
   };
-in
-{
+
   flake-file = {
     inherit nixConfig;
     inputs.nix-index-database.url = "github:nix-community/nix-index-database";
@@ -68,4 +67,7 @@ in
       };
     })
   ];
+in
+{
+  inherit flake flake-file cadence;
 }

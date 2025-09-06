@@ -1,33 +1,32 @@
 { inputs, lib, ... }:
 let
-  inherit (inputs.cadence.lib)
-    feature
-    features
-    ;
-in
-{
-  cadence.dependencies.hardware = [
-    "nixos/hardware"
-    "nixos/powerManagement"
-    "nixos/boot"
-    "nixos/networking"
-  ];
+  inherit (inputs.cadence.lib) feature features;
+  inherit (feature) nixos;
+
+  cadence.dependencies = {
+    nixos = [ "nixos/hardware" ];
+    "nixos/hardware" = [
+      "nixos/powerManagement"
+      "nixos/boot"
+      "nixos/networking"
+    ];
+  };
 
   flake.modules = features [
-    (feature.nixos "nixos/hardware" {
+    (nixos "nixos/hardware" {
       hardware = {
         enableAllHardware = true;
         enableAllFirmware = true;
         enableRedistributableFirmware = true;
       };
     })
-    (feature.nixos "nixos/powerManagement" {
+    (nixos "nixos/powerManagement" {
       powerManagement = {
         enable = lib.mkDefault true;
         cpuFreqGovernor = "schedutil";
       };
     })
-    (feature.nixos "nixos/boot" {
+    (nixos "nixos/boot" {
       boot = {
         loader = {
           systemd-boot.enable = lib.mkDefault true;
@@ -35,11 +34,13 @@ in
         };
       };
     })
-    (feature.nixos "nixos/networking" {
+    (nixos "nixos/networking" {
       networking = {
         networkmanager.enable = true;
-        # useDHCP = true;
       };
     })
   ];
+in
+{
+  inherit flake cadence;
 }

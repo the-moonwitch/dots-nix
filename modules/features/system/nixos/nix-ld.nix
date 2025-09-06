@@ -1,6 +1,7 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkNixosFeature "nix-ld" (
+let
+  inherit (inputs.cadence.lib.feature) nixos;
+  flake.modules = nixos "nix-ld" (
     { pkgs, ... }:
     {
       programs.nix-ld = {
@@ -127,4 +128,7 @@
       };
     }
   );
+in
+{
+  inherit flake;
 }

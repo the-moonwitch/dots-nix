@@ -1,8 +1,4 @@
-{
-  lib,
-  inputs,
-  ...
-}:
+{ lib, inputs, ... }:
 let
   const = import ./_const.nix;
 

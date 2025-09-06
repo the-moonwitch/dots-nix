@@ -1,6 +1,8 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkNixosFeature "locale" {
+let
+  inherit (inputs.cadence.lib.feature) nixos;
+
+  flake.modules = nixos "locale" {
     services.xserver.xkb = {
       layout = "pl";
       variant = "";
@@ -45,4 +47,7 @@
       LC_MONETARY = "pl_PL.UTF-8";
     };
   };
+in
+{
+  inherit flake;
 }

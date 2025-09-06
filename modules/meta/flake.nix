@@ -1,8 +1,6 @@
 { inputs, ... }:
 {
-  imports = [
-    inputs.cadence.flakeModules.default
-  ];
+  imports = [ inputs.cadence.flakeModules.default ];
 
   flake-file = {
     description = "Ninix";

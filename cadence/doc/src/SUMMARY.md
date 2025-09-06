@@ -4,8 +4,6 @@
 - [Usage](./00_usage.md)
 - [API](./10_api.md)
 
-
-
 # TODO: Note: confusing error on `nixosFeature module` rather than `nixosFeature.system module`:
 
 ```
