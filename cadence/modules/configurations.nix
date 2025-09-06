@@ -22,7 +22,8 @@ let
     ;
   cfg = config.cadence;
   # TODO: Feature trees group/feature
-  featureNames = attrNames cfg.dependencies ++ concatMap attrNames (attrValues self.modules);
+  featureNames =
+    attrNames cfg.dependencies ++ concatMap attrNames (attrValues self.modules);
 
   resolveDeps =
     deps:
@@ -68,12 +69,16 @@ let
       resolvedModules =
         moduleType:
         builtins.filter (f: f != null) (
-          builtins.map (f: inputs.self.modules.${moduleType}.${f} or null) resolvedFeatures
+          builtins.map (
+            f: inputs.self.modules.${moduleType}.${f} or null
+          ) resolvedFeatures
         );
-      homeModule = break {
+      homeModule = {
+        _module.args.host = hostDef;
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.users.${hostDef.username} = {
+          _module.args.host = hostDef;
           imports = resolvedModules "homeManager";
         };
       };
@@ -105,7 +110,9 @@ let
       };
     in
     {
-      ${lib.mapNullable (sc: "${sc}Configurations") systemClass}.${hostDef.hostname} =
+      ${
+        lib.mapNullable (sc: "${sc}Configurations") systemClass
+      }.${hostDef.hostname} =
         systemConfig.${systemClass};
       homeConfigurations."${hostDef.username}@${hostDef.hostname}" =
         inputs.home-manager.lib.homeManagerConfiguration

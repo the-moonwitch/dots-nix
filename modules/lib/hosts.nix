@@ -16,6 +16,8 @@
     in
     {
       inherit common host;
-      __functor = _: hostDefs: builtins.mapAttrs (name: def: { hostname = name; } // (host def)) hostDefs;
+      __functor =
+        _: hostDefs:
+        builtins.mapAttrs (name: def: { hostname = name; } // (host def)) hostDefs;
     };
 }

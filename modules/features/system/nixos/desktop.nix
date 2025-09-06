@@ -14,9 +14,7 @@ let
   };
 
   flake.modules = features [
-    (nixos "desktop/xserver" {
-      services.xserver.enable = true;
-    })
+    (nixos "desktop/xserver" { services.xserver.enable = true; })
     # Subfeatures
     (nixos "desktop[gnome]" {
       services = {

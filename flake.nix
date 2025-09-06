@@ -40,6 +40,15 @@
     nixpkgs-lib = {
       follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+    };
+    opnix = {
+      url = "github:brizzbuzz/opnix";
+    };
+    stylix = {
+      url = "github:nix-community/stylix";
+    };
     systems = {
       url = "github:nix-systems/default";
     };

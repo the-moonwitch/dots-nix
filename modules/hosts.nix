@@ -1,9 +1,13 @@
-{ inputs, self, ... }:
+{ self, ... }:
 let
   inherit (self.lib) hosts;
 in
 {
   cadence.hosts = hosts {
-    moth = { };
+    moth.features = [
+      "desktop[gnome]"
+      "desktop[personal]"
+      "dev[desktop]"
+    ];
   };
 }

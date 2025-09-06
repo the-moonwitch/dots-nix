@@ -1,8 +1,6 @@
 {
   cadence.dependencies = {
-    base = [
-      "locale"
-    ];
+    base = [ "locale" ];
     desktop = [
       "audio"
       "printing"

@@ -1,22 +1,7 @@
 inputs:
 let
-  inherit (builtins) mapAttrs;
   inherit (inputs.nixpkgs-lib) lib;
   const = import ./_const.nix;
-
-  if_ =
-    pred: _modules:
-    mapAttrs (
-      _: features:
-      mapAttrs (
-        _: f: featureInputs:
-        if pred featureInputs.hostParams then f else { }
-      ) features
-    );
-
-  featureIf = pred: mapAttrs (_name: fn: if_ pred fn);
-
-  featureIfHost = label: featureIf (hostDef: hostDef.label == label);
 
   feature =
     let
@@ -28,9 +13,10 @@ let
           homeManager ? { },
         }:
         {
-          ${const.class.nixos}.${name} = nixos;
-          ${const.class.homeManager}.${name} = homeManager;
-          ${const.class.darwin}.${name} = darwin;
+          ${if nixos == { } then null else const.class.nixos}.${name} = nixos;
+          ${if homeManager == { } then null else const.class.homeManager}.${name} =
+            homeManager;
+          ${if darwin == { } then null else const.class.darwin}.${name} = darwin;
         };
     in
     {
@@ -55,12 +41,5 @@ let
     } featList;
 in
 {
-  inherit
-    if_
-    feature
-    featureIf
-    featureIfHost
-    features
-    const
-    ;
+  inherit feature features const;
 }

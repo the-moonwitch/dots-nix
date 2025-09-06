@@ -1,9 +1,6 @@
 { inputs, ... }:
 let
   inherit (inputs.cadence.lib) feature;
-  cadence.dependencies.base = [
-    "base/stateVersion"
-  ];
   flake.modules = feature "base/stateVersion" {
     nixos = {
       system.stateVersion = "25.05";
@@ -19,5 +16,5 @@ let
   };
 in
 {
-  inherit flake cadence;
+  inherit flake;
 }
