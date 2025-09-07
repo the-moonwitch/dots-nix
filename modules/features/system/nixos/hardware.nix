@@ -18,6 +18,7 @@ let
         enableAllHardware = true;
         enableAllFirmware = true;
         enableRedistributableFirmware = true;
+        sensor.iio.enable = true;
       };
     })
     (nixos "nixos/powerManagement" {

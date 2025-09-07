@@ -33,7 +33,6 @@ let
       {
         nixpkgs = {
           hostPlatform = host.system;
-          config.allowUnfree = true;
         };
       }
     ))

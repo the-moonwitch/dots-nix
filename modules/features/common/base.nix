@@ -7,14 +7,17 @@ let
     "base/hostname"
     "base/user"
 
+    "unfree"
     "cli"
     "nix"
     "nixos"
     "secrets"
 
-    "stylix"
+    "styles"
     "fish[default]"
   ];
+
+  home = host: if host.class == "darwin" then "/Users/${host.username}" else "/home/${host.username}";
   flake.modules = features [
     (system "base/hostname" (
       { host, ... }:
@@ -39,11 +42,7 @@ let
             "tty"
             "wheel"
           ];
-          home =
-            if host.class == "darwin" then
-              "/Users/${host.username}"
-            else
-              "/home/${host.username}";
+          home = home host;
           openssh.authorizedKeys.keys = host.extra.authorizedKeys or [ ];
         };
       }
@@ -51,6 +50,12 @@ let
     (homeManager "base/user" (
       { lib, host, ... }:
       {
+        home = {
+          username = host.username;
+          homeDirectory = home host;
+          preferXdgDirectories = true;
+
+        };
         xdg = lib.mkIf (host.class != "darwin") {
           enable = true;
           mime.enable = true;

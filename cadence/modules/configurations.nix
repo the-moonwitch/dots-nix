@@ -74,7 +74,6 @@ let
           ) resolvedFeatures
         );
       homeModule = {
-        _module.args.host = hostDef;
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.users.${hostDef.username} = {
@@ -117,11 +116,11 @@ let
       homeConfigurations."${hostDef.username}@${hostDef.hostname}" =
         inputs.home-manager.lib.homeManagerConfiguration
           {
-            inherit (hostDef) system;
+            pkgs = inputs.nixpkgs.legacyPackages.${hostDef.system};
             modules = [
-              homeModule
-              { nixpkgs.hostPlatform = hostDef.system; }
-            ];
+              { nixpkgs.config.allowUnfree = true; }
+            ]
+            ++ resolvedModules "homeManager";
             extraSpecialArgs = {
               host = hostDef;
             };

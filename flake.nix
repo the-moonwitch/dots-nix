@@ -19,6 +19,9 @@
     cadence = {
       url = "path:/home/ines/dots/cadence";
     };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+    };
     flake-file = {
       url = "github:vic/flake-file";
     };

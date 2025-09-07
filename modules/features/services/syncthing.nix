@@ -8,9 +8,10 @@ let
       {
         services.syncthing = {
           enable = true;
-          tray = true;
+          tray.enable = true;
           overrideFolders = true;
           overrideDevices = true;
+          extraOptions = [ "--no-default-folder" ];
 
           # TODO
           #
