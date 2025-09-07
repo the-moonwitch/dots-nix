@@ -21,6 +21,8 @@
       prettier.enable = true;
       # Cfg
       toml-sort.enable = true;
+      # Just
+      just.enable = true;
     };
     settings = {
       # TODO:
@@ -31,6 +33,7 @@
       global.excludes = [
         "flake.lock"
         "flake.nix"
+        ".gitignore"
       ];
       # formatter.toml-sort.includes = [ "*.toml" ];
       on-unmatched = "warn";

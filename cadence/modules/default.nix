@@ -8,7 +8,6 @@ inputs: {
         inputs.flake-parts.flakeModules.modules
         inputs.flake-file.flakeModules.dendritic
         ./configurations.nix
-        ./formatter.nix
         ./options.nix
       ];
 

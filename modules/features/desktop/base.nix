@@ -1,12 +1,15 @@
 let
   cadence.dependencies = {
-    "desktop" = [ ];
+    "desktop" = [
+      "browser[firefox]"
+      "spotify"
+    ];
     "desktop[personal]" = [
       "desktop"
-      "browser[firefox]"
       "discord"
       "telegram"
-      "spotify"
+      "obsidian"
+      "syncthing"
     ];
   };
 in
