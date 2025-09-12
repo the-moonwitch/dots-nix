@@ -22,8 +22,7 @@ let
     ;
   cfg = config.cadence;
   # TODO: Feature trees group/feature
-  featureNames =
-    attrNames cfg.dependencies ++ concatMap attrNames (attrValues self.modules);
+  featureNames = attrNames cfg.dependencies ++ concatMap attrNames (attrValues self.modules);
 
   resolveDeps =
     deps:
@@ -69,15 +68,18 @@ let
       resolvedModules =
         moduleType:
         builtins.filter (f: f != null) (
-          builtins.map (
-            f: inputs.self.modules.${moduleType}.${f} or null
-          ) resolvedFeatures
+          builtins.map (f: inputs.self.modules.${moduleType}.${f} or null) resolvedFeatures
         );
+      homeDir =
+        if hostDef.class == "darwin" then "/Users/${hostDef.username}" else "/home/${hostDef.username}";
       homeModule = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.users.${hostDef.username} = {
-          _module.args.host = hostDef;
+          _module.args = {
+            host = hostDef;
+            home = homeDir;
+          };
           imports = resolvedModules "homeManager";
         };
       };
@@ -85,7 +87,10 @@ let
       systemConfig = {
         nixos = inputs.nixpkgs.lib.nixosSystem {
           inherit (hostDef) system;
-          specialArgs.host = hostDef;
+          specialArgs = {
+            host = hostDef;
+            home = homeDir;
+          };
           modules = [
             inputs.home-manager.nixosModules.home-manager
             homeModule
@@ -98,7 +103,10 @@ let
         };
         darwin = inputs.nix-darwin.lib.darwinSystem {
           inherit (hostDef) system;
-          specialArgs.host = hostDef;
+          specialArgs = {
+            host = hostDef;
+            home = homeDir;
+          };
           modules = [
             inputs.home-manager.darwinModules.home-manager
             homeModule
@@ -109,9 +117,7 @@ let
       };
     in
     {
-      ${
-        lib.mapNullable (sc: "${sc}Configurations") systemClass
-      }.${hostDef.hostname} =
+      ${lib.mapNullable (sc: "${sc}Configurations") systemClass}.${hostDef.hostname} =
         systemConfig.${systemClass};
       homeConfigurations."${hostDef.username}@${hostDef.hostname}" =
         inputs.home-manager.lib.homeManagerConfiguration
@@ -123,6 +129,7 @@ let
             ++ resolvedModules "homeManager";
             extraSpecialArgs = {
               host = hostDef;
+              home = homeDir;
             };
           };
     };

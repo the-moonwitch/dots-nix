@@ -11,30 +11,65 @@ let
   };
 
   flake.modules = features [
-    (nixos "secrets" {
-      imports = [ inputs.opnix.nixosModules.default ];
-      services.onepassword-secrets = {
-        # enable = true;
-        inherit secrets;
-      };
-      programs._1password-gui.enable = true;
-    })
+    (nixos "secrets" (
+      { host, ... }:
+      {
+        imports = [ inputs.opnix.nixosModules.default ];
+
+        environment.systemPackages = [
+          inputs.opnix.packages.${host.system}.default
+        ];
+
+        users.users."${host.username}" = {
+          extraGroups = [
+            "onepassword-secrets"
+          ];
+        };
+
+        services.onepassword-secrets = {
+          enable = true;
+          users = [ host.username ];
+          inherit secrets;
+          systemdIntegration = {
+            enable = true;
+            services = [
+              "home-manager-${host.username}"
+            ];
+            restartOnChange = true;
+            changeDetection.enable = true;
+            errorHandling.rollbackOnFailure = true;
+          };
+        };
+        programs._1password-gui.enable = true;
+      }
+    ))
 
     (darwin "secrets" {
       imports = [ inputs.opnix.darwinModules.default ];
       services.onepassword-secrets = {
-        # enable = true;
+        enable = true;
         inherit secrets;
       };
     })
 
-    (homeManager "secrets" {
-      imports = [ inputs.opnix.homeManagerModules.default ];
+    (homeManager "secrets" (
+      { host, ... }:
+      {
+        imports = [ inputs.opnix.homeManagerModules.default ];
 
-      programs.gpg = {
-        enable = true;
-      };
-    })
+        home.packages = [
+          inputs.opnix.packages.${host.system}.default
+        ];
+
+        programs.onepassword-secrets = {
+          # enable = true;
+        };
+
+        programs.gpg = {
+          enable = true;
+        };
+      }
+    ))
 
     (darwin "opass-gui" { homebrew.casks = [ "1password" ]; })
   ];

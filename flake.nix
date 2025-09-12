@@ -58,6 +58,9 @@
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
     };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+    };
   };
 
 }

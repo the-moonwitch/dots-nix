@@ -37,8 +37,14 @@ let
       }
     ))
     (feature.system "nix/nix-settings" (
-      { host, ... }:
+      { host, config, ... }:
       {
+        services.onepassword-secrets.secrets.nixGhToken = {
+          reference = "op://Host Secrets/Nix GitHub PAT/credential";
+          group = "onepassword-secrets";
+          mode = "0640";
+        };
+
         nix.settings = {
           extra-experimental-features = [
             "flakes"
@@ -48,6 +54,9 @@ let
             "root"
             "@wheel"
             host.username
+          ];
+          extra-access-tokens = [
+            "!include ${config.services.onepassword-secrets.secretPaths.nixGhToken}"
           ];
         };
       }

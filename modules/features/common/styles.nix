@@ -3,6 +3,22 @@ let
   inherit (inputs.cadence.lib) feature features;
   inherit (feature) nixos darwin homeManager;
 
+  fontDefs = pkgs: {
+    # Breaks??
+    sansSerif = {
+      package = pkgs.inter;
+      name = "Inter";
+    };
+    serif = {
+      package = pkgs.aleo-fonts;
+      name = "Aleo";
+    };
+    monospace = {
+      package = pkgs.maple-mono.variable;
+      name = "Maple Mono";
+    };
+  };
+
   cadence.dependencies = {
     "styles" = [
       "stylix"
@@ -23,7 +39,8 @@ let
     enable = true;
     flavor = "macchiato";
     accent = "mauve";
-    cache.enable = true;
+    # Breaks other package caches
+    # cache.enable = true;
   };
 
   flake-file.inputs = {
@@ -32,50 +49,82 @@ let
   };
 
   flake.modules = features [
-    (nixos "stylix" { imports = [ inputs.stylix.nixosModules.stylix ]; })
+    (nixos "stylix" (
+      { pkgs, lib, ... }:
+      {
+        imports = [ inputs.stylix.nixosModules.stylix ];
+
+        fonts.packages = lib.mapAttrsToList (_: { package, ... }: package) (fontDefs pkgs);
+      }
+    ))
 
     (darwin "stylix" { imports = [ inputs.stylix.darwinModules.stylix ]; })
 
     (homeManager "stylix" (
-      { pkgs, ... }:
+      { pkgs, lib, ... }:
+      let
+        defaultFonts = fontDefs pkgs;
+      in
       {
         imports = [ inputs.stylix.homeModules.stylix ];
-        home.packages = [
-          pkgs.aleo-fonts
-          pkgs.maple-mono.variable
-        ];
+
+        home.packages = lib.mapAttrsToList (_: { package, ... }: package) (fontDefs pkgs);
+
+        fonts.fontconfig = {
+          enable = true;
+          hinting = "slight";
+          defaultFonts = builtins.mapAttrs (_: { name, ... }: [ name ]) defaultFonts;
+        };
 
         stylix = {
           enable = true;
-          autoEnable = true;
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+          polarity = "dark";
+          autoEnable = false;
+          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-${catppuccin.flavor}.yaml";
           targets = {
-            firefox = {
-              enable = true;
-              profileNames = [ "default" ];
-            };
+            alacritty.enable = true;
+            vencord.enable = true;
+            eog.enable = true;
+            fish.enable = true;
+            font-packages.enable = true;
+            fontconfig.enable = true;
+            gedit.enable = true;
+            gnome-text-editor.enable = true;
+            gnome.enable = true;
+            gtksourceview.enable = true;
+            mpv.enable = true;
+            neovim.enable = true;
+            nixvim.enable = true;
+            nixos-icons.enable = true;
+            rio.enable = true;
+            tmux.enable = true;
+            # vscode = {
+            #   enable = true;
+            #   # profileNames = [ "default" ];
+            # };
+            xresources.enable = true;
+            zen-browser.enable = true;
+
+            # Catppuccin conflicts
+            foot.enable = false;
+            fzf.enable = false;
+            qt.enable = false;
+
+            # TODO Nixos
+            # grub.enable = true;
+            # lightdm.enable = true;
+            # plymouth.enable = true;
           };
           icons = {
             enable = true;
-            package = (
-              pkgs.catppuccin-papirus-folders.override {
-                flavor = "macchiato";
-                accent = "mauve";
-              }
-            );
+            package = pkgs.catppuccin-papirus-folders.override {
+              flavor = catppuccin.flavor;
+              accent = catppuccin.accent;
+            };
             dark = "Papirus-Dark";
             light = "Papirus-Light";
           };
-          fonts = {
-            serif = {
-              package = pkgs.aleo-fonts;
-              name = "Aleo";
-            };
-            monospace = {
-              package = pkgs.maple-mono.variable;
-              name = "Maple Mono";
-            };
-          };
+          fonts = defaultFonts;
         };
       }
     ))
@@ -87,29 +136,34 @@ let
       { pkgs, ... }:
       {
         imports = [ inputs.catppuccin.homeModules.catppuccin ];
-        inherit catppuccin;
-
-        home.packages = with pkgs; [
-          (catppuccin-kvantum.override {
-            accent = "Blue";
-            variant = "Macchiato";
-          })
-          libsForQt5.qtstyleplugin-kvantum
-          libsForQt5.qt5ct
-          (pkgs.catppuccin-gtk.override {
-            variant = "macchiato";
-            accents = "mauve";
-          })
-        ];
+        catppuccin = {
+          inherit (catppuccin)
+            flavor
+            accent
+            enable
+            ;
+          vscode.profiles.default = {
+            enable = false;
+          };
+          gtk.icon.enable = false;
+        };
 
         gtk = {
           enable = true;
-
+          theme = {
+            package = (
+              pkgs.catppuccin-gtk.override {
+                variant = catppuccin.flavor;
+                accents = [ catppuccin.accent ];
+              }
+            );
+            name = "catppuccin-${catppuccin.flavor}-${catppuccin.accent}-standard";
+          };
         };
 
         qt = {
           enable = true;
-          platformTheme = "qtct";
+          platformTheme.name = "kvantum";
           style.name = "kvantum";
         };
 

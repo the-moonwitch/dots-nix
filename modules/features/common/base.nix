@@ -17,7 +17,6 @@ let
     "fish[default]"
   ];
 
-  home = host: if host.class == "darwin" then "/Users/${host.username}" else "/home/${host.username}";
   flake.modules = features [
     (system "base/hostname" (
       { host, ... }:
@@ -26,8 +25,9 @@ let
       }
     ))
     (system "base/user" (
-      { host, ... }:
+      { host, home, ... }:
       {
+        systemd.services."home-${host.username}".restartIfChanged = true;
         users.groups."${host.username}" = { };
         users.users."${host.username}" = {
           description = host.extra.signature or "";
@@ -42,19 +42,23 @@ let
             "tty"
             "wheel"
           ];
-          home = home host;
+          home = home;
           openssh.authorizedKeys.keys = host.extra.authorizedKeys or [ ];
         };
       }
     ))
     (homeManager "base/user" (
-      { lib, host, ... }:
+      {
+        lib,
+        host,
+        home,
+        ...
+      }:
       {
         home = {
           username = host.username;
-          homeDirectory = home host;
+          homeDirectory = home;
           preferXdgDirectories = true;
-
         };
         xdg = lib.mkIf (host.class != "darwin") {
           enable = true;

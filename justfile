@@ -2,9 +2,12 @@
 #! nix-shell -p just -i "just --justfile"
 
 nh := "nix run nixpkgs#nh --"
-nh-flags := "--no-update-lock-file"
+nh-flags := ""
 
 default: sync
+
+opnix-auth:
+    if ! [ -f /etc/opnix-token ] && command -v opnix >/dev/null 2>&1; then sudo opnix token set; fi
 
 # Format all files in the flake
 [group('lint')]
@@ -30,26 +33,14 @@ update-flake *FLAGS: (update-deps FLAGS) (write-flake FLAGS)
 [group('build')]
 build *FLAGS: (write-flake FLAGS)
     {{ nh }} os build . -- {{ nh-flags }} {{ FLAGS }}
-    {{ nh }} home build . -- {{ nh-flags }} {{ FLAGS }}
 
-# Switch the os config
+# Switch the config
 [group('build')]
 [group('update')]
-switch-os *FLAGS: (write-flake FLAGS)
+switch *FLAGS: opnix-auth
     {{ nh }} os switch . -- {{ nh-flags }} {{ FLAGS }}
-
-# Switch the home config
-[group('build')]
-[group('update')]
-switch-home *FLAGS: (write-flake FLAGS)
-    {{ nh }} home switch . -- {{ nh-flags }} {{ FLAGS }}
-
-# Switch both the os and home config
-[group('build')]
-[group('update')]
-switch *FLAGS: (switch-os FLAGS) (switch-home FLAGS)
 
 # Fully update all dependencies and configs and switch
 [group('build')]
 [group('update')]
-sync *FLAGS: (update-flake FLAGS) (switch-os FLAGS) (switch-home FLAGS)
+sync *FLAGS: (update-flake FLAGS) (switch FLAGS)

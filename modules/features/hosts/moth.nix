@@ -1,14 +1,16 @@
 { inputs, ... }:
 let
   inherit (inputs.cadence.lib) feature features;
+  inherit (feature) homeManager nixos;
 
   cadence.dependencies.moth = [
     "moth/kernel"
     "moth/filesystems"
+    "moth/gnome"
   ];
 
   flake.modules = features [
-    (feature.nixos "moth/kernel" {
+    (nixos "moth/kernel" {
       imports = [
         (inputs.nixpkgs + "/nixos/modules/installer/scan/not-detected.nix")
       ];
@@ -25,7 +27,7 @@ let
       boot.extraModulePackages = [ ];
     })
 
-    (feature.nixos "moth/filesystems" {
+    (nixos "moth/filesystems" {
       fileSystems."/" = {
         device = "/dev/disk/by-uuid/56ae634a-36ab-433e-a3d9-102f6e8a5bbd";
         fsType = "btrfs";
@@ -46,6 +48,27 @@ let
 
       swapDevices = [ ];
     })
+    (homeManager "moth/gnome" ({
+      dconf.settings = {
+
+        "org/gnome/settings-daemon/plugins/media-keys" = {
+          custom-keybindings = [
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+          ];
+        };
+
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+          # Copilot button
+          binding = "<Shift><Super>TouchpadOff";
+          command = "foot";
+          name = "Terminal";
+        };
+
+        "org/gnome/settings-daemon/plugins/power" = {
+          power-button-action = "nothing";
+        };
+      };
+    }))
   ];
 in
 {
