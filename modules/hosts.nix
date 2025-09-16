@@ -9,6 +9,8 @@ in
       "desktop[gnome]"
       "desktop[personal]"
       "dev[desktop]"
+      "dev/python"
+      "nix-ld"
     ];
   };
 }

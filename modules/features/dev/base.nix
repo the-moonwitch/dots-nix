@@ -4,6 +4,7 @@
       "dev/nix"
       "git"
       "nixvim"
+      "devenv"
     ];
     "dev[desktop]" = [
       "dev"

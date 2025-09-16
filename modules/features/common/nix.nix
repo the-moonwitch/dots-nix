@@ -25,12 +25,12 @@ let
       {
         nixpkgs.overlays = [ (_final: prev: { nix = prev.lix; }) ];
         nix.package = pkgs.lix;
-        programs.command-not-found.enable = true;
       }
     ))
     (feature.system "nix/nixpkgs" (
       { host, ... }:
       {
+        programs.command-not-found.enable = true;
         nixpkgs = {
           hostPlatform = host.system;
         };
@@ -39,8 +39,8 @@ let
     (feature.system "nix/nix-settings" (
       { host, config, ... }:
       {
-        services.onepassword-secrets.secrets.nixGhToken = {
-          reference = "op://Host Secrets/Nix GitHub PAT/credential";
+        services.onepassword-secrets.secrets.nixAccessTokens = {
+          reference = "op://Host Secrets/Nix Access Tokens/credential";
           group = "onepassword-secrets";
           mode = "0640";
         };
@@ -55,10 +55,10 @@ let
             "@wheel"
             host.username
           ];
-          extra-access-tokens = [
-            "!include ${config.services.onepassword-secrets.secretPaths.nixGhToken}"
-          ];
         };
+        nix.extraOptions = ''
+          !include ${config.services.onepassword-secrets.secretPaths.nixAccessTokens}
+        '';
       }
     ))
     (feature.homeManager "nix" {

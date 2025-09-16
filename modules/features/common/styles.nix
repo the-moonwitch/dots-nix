@@ -14,8 +14,8 @@ let
       name = "Aleo";
     };
     monospace = {
-      package = pkgs.maple-mono.variable;
-      name = "Maple Mono";
+      package = pkgs.maple-mono.NF;
+      name = "Maple Mono NF";
     };
   };
 

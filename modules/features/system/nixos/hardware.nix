@@ -13,19 +13,32 @@ let
   };
 
   flake.modules = features [
-    (nixos "nixos/hardware" {
-      hardware = {
-        enableAllHardware = true;
-        enableAllFirmware = true;
-        enableRedistributableFirmware = true;
-        sensor.iio.enable = true;
-      };
-    })
+    (nixos "nixos/hardware" (
+      { pkgs, ... }:
+      {
+        environment.systemPackages = (
+          with pkgs;
+          [
+            lm_sensors
+          ]
+        );
+        hardware = {
+          enableAllHardware = true;
+          enableAllFirmware = true;
+          enableRedistributableFirmware = true;
+          sensor.iio.enable = true;
+        };
+
+      }
+    ))
     (nixos "nixos/powerManagement" {
       powerManagement = {
-        enable = lib.mkDefault true;
+        enable = true;
+        powertop.enable = true;
         cpuFreqGovernor = "schedutil";
       };
+      hardware.system76.enableAll = true;
+      services.power-profiles-daemon.enable = true;
     })
     (nixos "nixos/boot" {
       boot = {

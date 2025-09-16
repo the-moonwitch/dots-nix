@@ -1,7 +1,9 @@
 { ... }:
 let
   cadence.dependencies = {
-    cli = [ "git" ];
+    cli = [
+      "git"
+    ];
   };
 in
 {

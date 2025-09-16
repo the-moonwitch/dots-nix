@@ -15,6 +15,7 @@ let
 
     "styles"
     "fish[default]"
+    "fish[fetch]"
   ];
 
   flake.modules = features [
