@@ -10,5 +10,6 @@
     "preset/desktop"
     "discord"
     "telegram"
+    "spotify"
   ];
 }

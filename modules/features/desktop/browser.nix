@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   # Default browser = floorp
-  flake.dependencies.browser = [ "browser/firefox" ];
+  flake.dependencies.browser = [ "browser/floorp" ];
 
   imports = [
     {

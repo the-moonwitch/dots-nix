@@ -18,6 +18,7 @@
       features = [
         "preset/desktop"
         "dev/desktop"
+        "browser/firefox"
       ];
     };
   };

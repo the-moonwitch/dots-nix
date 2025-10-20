@@ -37,7 +37,7 @@
               "..." = "cd ../..";
               cat = "bat";
               ls = "eza";
-              grep = "ag";
+              grep = "rg";
               cd = "z";
             };
           };

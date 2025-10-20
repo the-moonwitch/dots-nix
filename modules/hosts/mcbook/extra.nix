@@ -28,8 +28,10 @@
           "rustup"
           "protobuf"
           "pipx"
+          "uv"
         ];
         casks = [
+          "firefox"
           "spotify"
         ];
       };
