@@ -22,13 +22,11 @@ let
         programs.git = {
           enable = !pkgs.stdenvNoCC.isDarwin;
           package = pkgs.gitFull;
-          userName = host.extra.signature or "Ines";
-          userEmail = host.extra.email or "ines@moonwit.ch";
-          signing = {
-            format = "ssh";
-            # signByDefault = true;
-          };
-          extraConfig = {
+          settings = {
+            user = {
+              name = host.extra.signature or "ines";
+              email = host.extra.email or "ines@moonwit.ch";
+            };
             init.defaultBranch = "main";
             pager.difftool = true;
             github.user = "the-moonwitch";
@@ -55,6 +53,12 @@ let
               enabled = true;
             };
           };
+          signing = {
+            format = "ssh";
+            # signByDefault = true;
+          };
+          extraConfig = {
+          };
 
           ignores = [
             ".DS_Store"
@@ -75,11 +79,6 @@ let
 
           lfs.enable = true;
 
-          difftastic = {
-            enable = true;
-            enableAsDifftool = true;
-          };
-
           #delta = {
           #  enable = true;
           #  options = {
@@ -87,6 +86,11 @@ let
           #    side-by-side = false;
           #  };
           #};
+        };
+
+        programs.difftastic = {
+          enable = true;
+          git.enable = true;
         };
       }
     ))

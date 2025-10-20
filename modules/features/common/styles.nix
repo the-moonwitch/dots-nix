@@ -54,7 +54,10 @@ let
       {
         imports = [ inputs.stylix.nixosModules.stylix ];
 
-        fonts.packages = lib.mapAttrsToList (_: { package, ... }: package) (fontDefs pkgs);
+        fonts.packages = (lib.mapAttrsToList (_: { package, ... }: package) (fontDefs pkgs)) ++ [
+          pkgs.atkinson-hyperlegible-next
+          pkgs.jetbrains-mono
+        ];
       }
     ))
 

@@ -32,7 +32,7 @@ let
       # Better ls
       # TODO: readme includes AI ads,
       # replace with something non-brainrotted
-      exa.enable = true;
+      eza.enable = true;
 
       # Better grep
       ripgrep.enable = true;
