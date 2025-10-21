@@ -1,7 +1,6 @@
 let
   cadence.dependencies = {
     "desktop" = [
-      "browser[firefox]"
       "browser[zen]"
       "spotify"
     ];

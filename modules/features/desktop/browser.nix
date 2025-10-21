@@ -9,7 +9,7 @@ let
 
   # Default browser = firefox
   cadence.dependencies = {
-    browser = [ ];
+    browser = [ "browser" ];
     "browser[firefox]" = [ "browser" ];
     "browser[zen]" = [ "browser" ];
   };
