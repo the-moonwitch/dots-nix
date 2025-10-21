@@ -1,6 +1,7 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkHomeFeature "alacritty" {
+let
+  inherit (inputs.cadence.lib.feature) homeManager;
+  flake.modules = homeManager "alacritty" {
     programs.alacritty = {
       enable = true;
       settings = {
@@ -11,4 +12,7 @@
       };
     };
   };
+in
+{
+  inherit flake;
 }

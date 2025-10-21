@@ -1,9 +1,5 @@
-{ inputs, lib, ... }:
+{ inputs, ... }:
 {
-  flake-file.inputs = {
-    home-manager.url = "github:nix-community/home-manager";
-  };
-
   imports = [ inputs.treefmt-nix.flakeModule ];
 
   perSystem.treefmt = {
@@ -12,8 +8,8 @@
       # Nix
       nixfmt = {
         enable = true;
-        strict = lib.mkForce true;
-        width = lib.mkForce 79;
+        strict = true;
+        width = 79;
       };
       deadnix.enable = true;
       nixf-diagnose.enable = true;
@@ -25,12 +21,23 @@
       prettier.enable = true;
       # Cfg
       toml-sort.enable = true;
+      # Just
+      just.enable = true;
     };
-    # TODO:
-    #  Flake.nix gets formatted using different settings at generation,
-    #  which makes the equality check fail.
-    #  Figure out a way to match the formatter settings used by `nixfmt` vs `#write-flake`.
-    settings.global.excludes = [ "flake.nix" ];
+    settings = {
+      # TODO:
+      #  Flake.nix gets formatted using different settings at generation,
+      #  which makes the equality check fail.
+      # Figure out a way to match the formatter settings used by `nixfmt` vs
+      # `#write-flake`.
+      global.excludes = [
+        "flake.lock"
+        "flake.nix"
+        ".gitignore"
+      ];
+      # formatter.toml-sort.includes = [ "*.toml" ];
+      on-unmatched = "warn";
+    };
   };
 
 }

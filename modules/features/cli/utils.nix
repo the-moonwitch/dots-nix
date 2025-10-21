@@ -1,13 +1,8 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkHomeFeature "cli-utils" {
+let
+  inherit (inputs.cadence.lib.feature) homeManager;
+  flake.modules = homeManager "cli-utils" {
     programs = {
-      # Automatic environment management
-      direnv = {
-        enable = true;
-        nix-direnv.enable = true;
-      };
-
       # Better shell history
       atuin = {
         enable = true;
@@ -27,7 +22,12 @@
       # Better cat
       # TODO: readme includes AI ads,
       # replace with something non-brainrotted
-      bat.enable = true;
+      bat = {
+        enable = true;
+        config = {
+          paging = "never";
+        };
+      };
 
       # Better ls
       # TODO: readme includes AI ads,
@@ -38,4 +38,7 @@
       ripgrep.enable = true;
     };
   };
+in
+{
+  inherit flake;
 }

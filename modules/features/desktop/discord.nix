@@ -1,6 +1,7 @@
 { inputs, ... }:
-{
-  flake.modules = inputs.self.lib.mkHomeFeature "discord" (
+let
+  inherit (inputs.cadence.lib.feature) homeManager;
+  flake.modules = homeManager "discord" (
     { pkgs, ... }:
     {
       home = {
@@ -13,4 +14,7 @@
       };
     }
   );
+in
+{
+  inherit flake;
 }

@@ -1,12 +1,10 @@
 { inputs, ... }:
 let
   inherit (inputs.cadence.lib.feature) homeManager;
-  flake.modules = homeManager "dev/nix" (
+  flake.modules = homeManager "nodejs" (
     { pkgs, ... }:
     {
-      home = {
-        packages = with pkgs; [ nil ];
-      };
+      home.packages = [ pkgs.nodejs ];
     }
   );
 in

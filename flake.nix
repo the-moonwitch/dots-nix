@@ -13,8 +13,14 @@
   };
 
   inputs = {
-    allfollow = {
-      url = "github:spikespaz/allfollow";
+    cadence = {
+      url = "path:/home/ines/dots/cadence";
+    };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+    };
+    flake-aspects = {
+      url = "github:vic/flake-aspects";
     };
     flake-file = {
       url = "github:vic/flake-file";
@@ -25,22 +31,11 @@
     home-manager = {
       url = "github:nix-community/home-manager";
     };
-    homebrew-cask = {
-      flake = false;
-      url = "github:homebrew/homebrew-cask";
-    };
-    homebrew-core = {
-      flake = false;
-      url = "github:homebrew/homebrew-core";
-    };
     import-tree = {
       url = "github:vic/import-tree";
     };
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-    };
-    nix-homebrew = {
-      url = "github:zhaofengli/nix-homebrew";
+    nix-auto-follow = {
+      url = "github:fzakaria/nix-auto-follow";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -65,6 +60,9 @@
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
+    };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
     };
   };
 

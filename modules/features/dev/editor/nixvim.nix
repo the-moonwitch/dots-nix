@@ -1,8 +1,10 @@
 { inputs, ... }:
-{
+let
+  inherit (inputs.cadence.lib.feature) homeManager;
+
   flake-file.inputs.nixvim.url = "github:nix-community/nixvim";
 
-  flake.modules = inputs.self.lib.mkHomeFeature "nixvim" {
+  flake.modules = homeManager "nixvim" {
     imports = [ inputs.nixvim.homeModules.nixvim ];
 
     programs.nixvim = {
@@ -13,4 +15,7 @@
       defaultEditor = true;
     };
   };
+in
+{
+  inherit flake flake-file;
 }

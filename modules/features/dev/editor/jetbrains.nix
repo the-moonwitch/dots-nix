@@ -1,18 +1,20 @@
 { inputs, lib, ... }:
-{
-  flake.modules = inputs.self.lib.mkFeature "jetbrains" {
-    home =
+let
+  inherit (inputs.cadence.lib) feature features;
+  inherit (feature) homeManager darwin;
+
+  flake.modules = features [
+    (homeManager "jetbrains" (
       { pkgs, ... }:
       {
         imports = [
           {
-
             home = lib.mkIf (!pkgs.stdenvNoCC.isDarwin) {
               packages = with pkgs; [ jetbrains-toolbox ];
             };
           }
+          # TODO move this elsewhere
           {
-
             home = {
               packages = with pkgs; [
                 pre-commit
@@ -22,11 +24,12 @@
             };
           }
         ];
-      };
-    nixos = inputs.self.lib.declareUnfree [ "jetbrains-toolbox" ];
-    darwin = {
-      imports = [ ];
-      homebrew.casks = [ "jetbrains-toolbox" ];
-    };
-  };
+      }
+    ))
+
+    (darwin "jetbrains" { homebrew.casks = [ "jetbrains-toolbox" ]; })
+  ];
+in
+{
+  inherit flake;
 }
