@@ -18,8 +18,8 @@ in
       class = "darwin";
       username = "ines";
       features = [
-        "preset/desktop"
-        "dev/desktop"
+        "base"
+        "dev[desktop]"
       ];
     };
   };

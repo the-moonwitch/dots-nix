@@ -14,7 +14,7 @@
 
   inputs = {
     cadence = {
-      url = "path:/home/ines/dots/cadence";
+      url = "github:the-moonwitch/cadence";
     };
     catppuccin = {
       url = "github:catppuccin/nix";
