@@ -13,9 +13,6 @@
   };
 
   inputs = {
-    cadence = {
-      url = "github:the-moonwitch/cadence";
-    };
     catppuccin = {
       url = "github:catppuccin/nix";
     };
@@ -36,6 +33,9 @@
     };
     nix-auto-follow = {
       url = "github:fzakaria/nix-auto-follow";
+    };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";

@@ -1,20 +1,16 @@
-{ inputs, ... }:
-let
-  inherit (inputs.cadence.lib.feature) homeManager;
-  flake.modules = homeManager "discord" (
+{ lib, config, ... }:
+{
+  flake.aspects.discord.homeManager =
     { pkgs, ... }:
-    {
-      home = {
-        packages = with pkgs; [
-          (discord.override {
-            withOpenASAR = true;
-            withVencord = true;
+    lib.mkMerge [
+      (config.flake.lib.allowUnfree [ "discord" ])
+      {
+        home.packages = lib.mkDefault [
+          (pkgs.discord.override {
+            withOpenASAR = lib.mkDefault true;
+            withVencord = lib.mkDefault true;
           })
         ];
-      };
-    }
-  );
-in
-{
-  inherit flake;
+      }
+    ];
 }

@@ -1,167 +1,55 @@
-{ inputs, ... }:
-let
-  inherit (inputs.cadence.lib) feature features;
-  inherit (feature)
-    nixos
-    darwin
-    homeManager
-    system
-    ;
+{ lib, ... }:
+{
+  # TODO: extract common parts
 
-  cadence.dependencies = {
-    "fish" = [ "cli-utils" ];
-    "fish[default]" = [ "fish" ];
-    "fish[fetch]" = [ "fish" ];
-  };
+  flake.aspects.fish = {
+    nixos = { pkgs, hostDef, ... }: {
+      programs.fish.enable = lib.mkDefault true;
 
-  flake.modules = features [
-    (nixos "fish" { programs.fish.enable = true; })
+      users.users.${hostDef.username}.shell = lib.mkDefault pkgs.fish;
+      users.users.root.shell = lib.mkDefault pkgs.fish;
+    };
 
-    (system "fish[default]" (
-      { host, pkgs, ... }:
+    darwin =
+      { pkgs, hostDef, ... }:
       {
-        users.users."${host.username}".shell = pkgs.fish;
-        users.users.root.shell = pkgs.fish;
-      }
-    ))
+        programs.fish.enable = lib.mkDefault true;
 
-    (darwin "fish" (
-      { pkgs, ... }:
-      {
-        programs.fish.enable = true;
-
-        environment.shells = [
+        environment.shells = lib.mkDefault [
           pkgs.fish
           pkgs.zsh
           pkgs.bashInteractive
         ];
-      }
-    ))
 
-    (homeManager "fish" (
-      { pkgs, ... }:
-      {
-        home.shell.enableFishIntegration = true;
+        users.users.${hostDef.username}.shell = lib.mkDefault pkgs.fish;
+        users.users.root.shell = lib.mkDefault pkgs.fish;
+      };
 
-        programs = {
-          fish = {
-            enable = true;
-            plugins = [
-              {
-                name = "autopair";
-                src = pkgs.fishPlugins.autopair;
-              }
-            ];
-            shellAliases = {
-              ".." = "cd ..";
-              "..." = "cd ../..";
-              cat = "bat";
-              ls = "eza";
-              grep = "rg";
-              cd = "z";
-            };
-          };
-
-          # Prompt
-          starship = {
-            enable = true;
-            enableInteractive = true;
-            enableFishIntegration = true;
-            settings = { };
-          };
-        };
-      }
-    ))
-
-    (homeManager "fish[fetch]" (
-      { lib, ... }:
-      {
-
-        programs.fish.functions.fish_greeting.body = ''
-          fastfetch
+    homeManager = { pkgs, config, lib, ... }: {
+      programs.fish = {
+        enable = lib.mkDefault true;
+        plugins = lib.mkDefault [
+          {
+            name = "autopair";
+            src = pkgs.fishPlugins.autopair;
+          }
+        ];
+        shellInit = lib.mkDefault ''
+          fish_add_path ~/.local/bin
         '';
-        programs.fastfetch = {
-          enable = true;
-          settings =
-            let
-              hlColor = "bold_magenta";
-            in
-            {
-              logo = {
-                type = "small";
-                padding.top = 4;
-              };
-              display = {
-                separator = " ∷ ";
-                color.separator = hlColor;
-              };
-              modules =
-                let
-                  pad =
-                    str:
-                    let
-                      width = 8;
-                      len = builtins.stringLength str;
-                    in
-                    if len < width then (lib.strings.replicate (width - len) " ") + str else str;
-                  padded = str: {
-                    type = str;
-                    key = pad str;
-                  };
-
-                in
-                [
-                  {
-                    type = "title";
-                    format = "    {user-name-colored} {at-symbol-colored} {host-name-colored}";
-                    color.user = hlColor;
-                    color.host = hlColor;
-                  }
-                  (padded "uptime")
-                  {
-                    type = "custom";
-                    format = "        ╶═╴";
-                    outputColor = hlColor;
-                  }
-                  {
-                    type = "os";
-                    key = pad "system";
-                  }
-                  (padded "kernel")
-                  (padded "host")
-                  {
-                    type = "packages";
-                    key = pad "pkg";
-                  }
-                  {
-                    type = "shell";
-                    key = pad "sh";
-                  }
-                  {
-                    type = "cpu";
-                    key = pad "cpu";
-                    temp = true;
-                    showPeCoreCount = true;
-                  }
-                  {
-                    type = "gpu";
-                    key = pad "gpu";
-                    driverSpecific = true;
-                    temp = true;
-                  }
-                  {
-                    type = "disk";
-                    key = pad "disk";
-                    folders = [ "/" ];
-                  }
-                  (padded "memory")
-                ];
-            };
+        shellAliases = lib.mkDefault {
+          ".." = "cd ..";
+          "..." = "cd ../..";
+          cat = "bat";
+          ls = "eza";
+          grep = "rg";
+          cd = "z";
         };
-      }
-    ))
-  ];
-in
-{
-  inherit flake cadence;
+        # Conditionally add fastfetch greeting if fastfetch is enabled
+        functions.fish_greeting = lib.mkIf config.programs.fastfetch.enable {
+          body = lib.mkDefault "fastfetch";
+        };
+      };
+    };
+  };
 }

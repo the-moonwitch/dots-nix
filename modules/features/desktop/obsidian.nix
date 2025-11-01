@@ -1,18 +1,13 @@
-{ inputs, ... }:
-let
-  inherit (inputs.cadence.lib.feature) homeManager;
-
-  flake.modules = (
-    homeManager "obsidian" (
-      { ... }:
+{ lib, config, ... }:
+{
+  flake.aspects.obsidian.homeManager =
+    { ... }:
+    lib.mkMerge [
+      (config.flake.lib.allowUnfree [ "obsidian" ])
       {
         programs.obsidian = {
-          enable = true;
+          enable = lib.mkDefault true;
         };
       }
-    )
-  );
-in
-{
-  inherit flake;
+    ];
 }

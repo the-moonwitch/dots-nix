@@ -1,15 +1,6 @@
-{ inputs, ... }:
-let
-  inherit (inputs.cadence.lib.feature) homeManager;
-  flake.modules = homeManager "telegram" (
-    { pkgs, ... }:
-    {
-      home = {
-        packages = with pkgs; [ telegram-desktop ];
-      };
-    }
-  );
-in
+{ lib, ... }:
 {
-  inherit flake;
+  flake.aspects.telegram.homeManager = { pkgs, ... }: {
+    home.packages = lib.mkDefault [ pkgs.telegram-desktop ];
+  };
 }

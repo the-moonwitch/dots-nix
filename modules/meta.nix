@@ -1,11 +1,11 @@
 { inputs, ... }:
 {
-  imports = [ inputs.cadence.flakeModules.default ];
+  imports = [
+    inputs.flake-aspects.flakeModule
+    inputs.flake-file.flakeModules.dendritic
+  ];
 
   flake-file = {
     description = "Ninix";
-    inputs = {
-      cadence.url = "github:the-moonwitch/cadence";
-    };
   };
 }
