@@ -9,6 +9,8 @@
       aspects = [
         "base"
         "cli"
+        "nixvim"
+        "obsidian"
         "mcbook"
       ];
     };
@@ -21,6 +23,8 @@
       aspects = [
         "base"
         "cli"
+        "nixvim"
+        "obsidian"
         "system/nixos/hardware"
         "system/nixos/power-management"
         "system/nixos/boot"

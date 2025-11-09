@@ -35,7 +35,7 @@
 
     homeManager = { pkgs, ... }: {
       imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
+        inputs.catppuccin.homeModules.catppuccin
       ];
 
       # Stylix is configured at the system level and propagates to home-manager

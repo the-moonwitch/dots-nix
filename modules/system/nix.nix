@@ -29,6 +29,10 @@
         };
 
         nix.settings = {
+          experimental-features = lib.mkDefault [
+            "flakes"
+            "nix-command"
+          ];
           extra-experimental-features = lib.mkDefault [
             "flakes"
             "nix-command"
@@ -61,6 +65,10 @@
         };
 
         nix.settings = {
+          experimental-features = lib.mkDefault [
+            "flakes"
+            "nix-command"
+          ];
           extra-experimental-features = lib.mkDefault [
             "flakes"
             "nix-command"
@@ -77,7 +85,7 @@
       };
 
     homeManager = { ... }: {
-      imports = [ inputs.nix-index-database.hmModules.nix-index ];
+      imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
       programs = {
         nix-index.enable = lib.mkDefault true;
