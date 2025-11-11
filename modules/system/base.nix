@@ -4,6 +4,8 @@
     nixos =
       { hostDef, ... }:
       {
+        nixpkgs.config.allowUnfree = lib.mkDefault true;
+
         networking.hostName = lib.mkDefault hostDef.hostname;
 
         systemd.services."home-${hostDef.username}".restartIfChanged = lib.mkDefault true;

@@ -1,0 +1,18 @@
+{
+  "Profiles": [
+    {
+      "Name": "Default",
+      "Guid": "Default",
+      "Normal Font": "MapleMono-NF 11",
+      "Use Non-ASCII Font": false,
+      "Horizontal Spacing": 1,
+      "Vertical Spacing": 1,
+      "Use Bright Bold": true,
+      "Minimum Contrast": 0,
+      "Use Bold Font": true,
+      "Use Italic Font": true,
+      "ASCII Anti Aliased": true,
+      "Non-ASCII Anti Aliased": true
+    }
+  ]
+}

@@ -15,7 +15,7 @@
       # Colorscheme - works with Stylix
       colorschemes.catppuccin = {
         enable = lib.mkDefault true;
-        settings.flavour = lib.mkDefault "mocha";
+        settings.flavour = lib.mkDefault "macchiato";
       };
 
       # Essential options

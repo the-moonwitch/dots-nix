@@ -50,7 +50,6 @@
           };
           signing = {
             signByDefault = lib.mkDefault false;
-            key = lib.mkDefault null;
           };
         };
 

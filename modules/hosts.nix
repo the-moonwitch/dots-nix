@@ -10,7 +10,10 @@
         "base"
         "cli"
         "nixvim"
+        "vscode"
         "obsidian"
+        "iterm2"
+        "podman"
         "mcbook"
       ];
     };
@@ -24,7 +27,10 @@
         "base"
         "cli"
         "nixvim"
+        "vscode"
         "obsidian"
+        "foot"
+        "podman"
         "system/nixos/hardware"
         "system/nixos/power-management"
         "system/nixos/boot"

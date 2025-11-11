@@ -6,8 +6,8 @@
     nixos = { pkgs, hostDef, ... }: {
       programs.fish.enable = lib.mkDefault true;
 
-      users.users.${hostDef.username}.shell = lib.mkDefault pkgs.fish;
-      users.users.root.shell = lib.mkDefault pkgs.fish;
+      users.users.${hostDef.username}.shell = pkgs.fish;
+      users.users.root.shell = pkgs.fish;
     };
 
     darwin =
@@ -21,8 +21,8 @@
           pkgs.bashInteractive
         ];
 
-        users.users.${hostDef.username}.shell = lib.mkDefault pkgs.fish;
-        users.users.root.shell = lib.mkDefault pkgs.fish;
+        users.users.${hostDef.username}.shell = pkgs.fish;
+        users.users.root.shell = pkgs.fish;
       };
 
     homeManager = { pkgs, config, lib, ... }: {

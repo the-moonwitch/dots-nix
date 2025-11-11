@@ -16,7 +16,13 @@
         enable = lib.mkDefault true;
         autoEnable = lib.mkDefault true;
         polarity = lib.mkDefault "dark";
-        base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+        base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+        fonts = {
+          monospace = {
+            package = pkgs.maple-mono.NF;
+            name = "Maple Mono NF";
+          };
+        };
       };
     };
 
@@ -29,7 +35,13 @@
         enable = lib.mkDefault true;
         autoEnable = lib.mkDefault true;
         polarity = lib.mkDefault "dark";
-        base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+        base16Scheme = lib.mkDefault "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
+        fonts = {
+          monospace = {
+            package = pkgs.maple-mono.NF;
+            name = "Maple Mono NF";
+          };
+        };
       };
     };
 
