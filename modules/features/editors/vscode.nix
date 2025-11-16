@@ -14,18 +14,21 @@
               vscodevim.vim
               github.copilot
               github.copilot-chat
-              catppuccin.catppuccin-vsc
-              catppuccin.catppuccin-vsc-icons
             ];
 
             userSettings = {
               "nix.enableLanguageServer" = lib.mkDefault true;
               "nix.serverPath" = lib.mkDefault "nil";
+              "nix.formatterPath" = lib.mkDefault "nixfmt";
               "rust-analyzer.check.command" = lib.mkDefault "clippy";
               "vim.useSystemClipboard" = lib.mkDefault true;
               "vim.hlsearch" = lib.mkDefault true;
               "github.copilot.enable" = lib.mkDefault {
                 "*" = true;
+              };
+              "[nix]" = lib.mkDefault {
+                "editor.defaultFormatter" = "jnoortheen.nix-ide";
+                "editor.formatOnSave" = true;
               };
             };
           };

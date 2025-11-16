@@ -16,6 +16,9 @@
     catppuccin = {
       url = "github:catppuccin/nix";
     };
+    devenv = {
+      url = "github:cachix/devenv";
+    };
     flake-aspects = {
       url = "github:vic/flake-aspects";
     };

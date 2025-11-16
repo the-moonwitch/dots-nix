@@ -1,45 +1,85 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, inputs, ... }:
+
 {
-  packages = with pkgs; [ nh ];
+  # https://devenv.sh/basics/
+  env.GREET = "devenv";
 
+  # Disable automatic cachix cache management
+  cachix.enable = false;
+
+  # https://devenv.sh/packages/
+  packages = with pkgs; [ git nh ];
+
+  # https://devenv.sh/languages/
+  languages.nix.enable = true;
+
+  # https://devenv.sh/processes/
+  # processes.dev.exec = "${lib.getExe pkgs.watchexec} -n -- ls -la";
+
+  # https://devenv.sh/services/
+  # services.postgres.enable = true;
+
+  # https://devenv.sh/scripts/
   scripts = {
-    fmt.exec = ''
-      nix fmt
-      nix fmt
+    # Helper to get the appropriate nh subcommand for the current platform
+    nh-platform.exec = ''
+      if [ -f /etc/NIXOS ]; then
+        echo "os"
+      else
+        echo "darwin"
+      fi
     '';
 
-    update-deps.exec = ''
-      nix flake update "$@"
-    '';
-
-    write-flake.exec = ''
-      nix run ".#write-flake" "$@"
-    '';
-
-    update-flake.exec = ''
-      update-deps "$@"
-      write-flake "$@"
-    '';
-
-    build.exec = ''
-      write-flake "$@"
-      nh os build . -- "$@"
-    '';
-
+    # Switch to new configuration
     switch.exec = ''
       if ! [ -f /etc/opnix-token ] && command -v opnix >/dev/null 2>&1; then
         sudo opnix token set
       fi
-      nh os switch . -- "$@"
+      nh "$(nh-platform)" switch . -- "$@"
     '';
 
-    sync.exec = ''
-      update-flake "$@"
-      switch "$@"
+    # Build configuration without switching
+    build.exec = ''
+      nh "$(nh-platform)" build . -- "$@"
+    '';
+
+    # Update flake inputs
+    update.exec = ''
+      nix flake update "$@"
+    '';
+
+    # Check flake validity
+    check.exec = ''
+      nix flake check "$@"
+    '';
+
+    # Clean old generations (keep last 5)
+    clean.exec = ''
+      nh clean all --keep 5 "$@"
     '';
   };
 
+  # https://devenv.sh/basics/
   enterShell = ''
-    echo "Available: fmt, update-deps, write-flake, update-flake, build, switch, sync"
+    echo "Welcome to the devenv shell!"
+    echo "Available commands: switch, build, update, check, clean"
+    git --version
   '';
+
+  # https://devenv.sh/tasks/
+  # tasks = {
+  #   "myproj:setup".exec = "mytool build";
+  #   "devenv:enterShell".after = [ "myproj:setup" ];
+  # };
+
+  # https://devenv.sh/tests/
+  enterTest = ''
+    echo "Running tests"
+    git --version | grep --color=auto "${pkgs.git.version}"
+  '';
+
+  # https://devenv.sh/git-hooks/
+  # git-hooks.hooks.shellcheck.enable = true;
+
+  # See full reference at https://devenv.sh/reference/options/
 }

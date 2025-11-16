@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "WebSearch",
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:nix.catppuccin.com)",
+      "WebFetch(domain:devenv.sh)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

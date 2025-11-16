@@ -1,6 +1,8 @@
 { lib, ... }:
 {
-  flake.aspects.mise.homeManager = { pkgs, ... }: {
-    home.packages = lib.mkDefault [ pkgs.mise ];
+  flake.aspects.mise.homeManager = {
+    programs.mise = {
+      enable = lib.mkDefault true;
+    };
   };
 }

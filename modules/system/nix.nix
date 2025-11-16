@@ -37,7 +37,7 @@
             "flakes"
             "nix-command"
           ];
-          trusted-users = lib.mkDefault [
+          trusted-users = [
             "root"
             "@wheel"
             hostDef.username
@@ -73,10 +73,16 @@
             "flakes"
             "nix-command"
           ];
-          trusted-users = lib.mkDefault [
+          trusted-users = [
             "root"
             "@admin"
             hostDef.username
+          ];
+          extra-substituters = lib.mkDefault [
+            "https://devenv.cachix.org"
+          ];
+          extra-trusted-public-keys = lib.mkDefault [
+            "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
           ];
         };
         nix.extraOptions = lib.mkDefault ''
