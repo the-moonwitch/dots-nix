@@ -78,11 +78,9 @@
         };
 
         # Initialize homebrew for darwin in home-manager
-        programs.fish.shellInit = lib.mkIf (hostDef.class == "darwin") (
-          lib.mkDefault ''
-            eval (/opt/homebrew/bin/brew shellenv fish)
-          ''
-        );
+        programs.fish.shellInit = lib.mkIf (hostDef.class == "darwin") ''
+          eval (/opt/homebrew/bin/brew shellenv fish)
+        '';
       };
   };
 }

@@ -17,7 +17,7 @@
     homeManager = { pkgs, ... }: {
       services.ssh-agent.enable = lib.mkDefault (!pkgs.stdenvNoCC.isDarwin);
 
-      programs.fish.shellInit = lib.mkDefault ''
+      programs.fish.shellInit = ''
         fish_add_path $(brew --prefix rustup)/bin
       '';
 

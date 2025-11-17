@@ -34,7 +34,7 @@
             src = pkgs.fishPlugins.autopair;
           }
         ];
-        shellInit = lib.mkDefault ''
+        shellInit = ''
           fish_add_path ~/.local/bin
         '';
         shellAliases = lib.mkDefault {
